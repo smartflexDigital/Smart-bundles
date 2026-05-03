@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Bundles</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WEKC6JCR27"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-WEKC6JCR27');
+    </script>
+
+    <title>Smart Bundles</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -40,7 +51,7 @@
 </div>
 <h2>Bando za Tigo (Miezi 2)</h2>
 <p class="network-stock tigo-stock">
-🔥 Orders za leo zilizobaki (Tigo): <span id="tigoStock">10</span>
+🔥 Orders za leo zilizobaki (Tigo): <span id="tigoStock"></span>
 </p>
 <div class="container"> <div class="card"><h3>1GB</h3><p>1,800 TZS</p><button onclick="orderBundle('1GB Tigo','1,800 TZS')">Nunua Sasa</button></div> <div class="card"><h3>2GB</h3><p>3,800 TZS</p><button onclick="orderBundle('2GB Tigo','3,800 TZS')">Nunua Sasa</button></div> <div class="card"><h3>3GB</h3><p>5,500 TZS</p><button onclick="orderBundle('3GB Tigo','5,500 TZS')">Nunua Sasa</button></div> <div class="card"><h3>4GB</h3><p>7,200 TZS</p><button onclick="orderBundle('4GB Tigo','7,200 TZS')">Nunua Sasa</button></div> <div class="card"><h3>5GB</h3><p>9,000 TZS</p><button onclick="orderBundle('5GB Tigo','9,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>6GB</h3><p>10,700 TZS</p><button onclick="orderBundle('6GB Tigo','10,700 TZS')">Nunua Sasa</button></div> <div class="card"><h3>7GB</h3><p>12,500 TZS</p><button onclick="orderBundle('7GB Tigo','12,500 TZS')">Nunua Sasa</button></div> <div class="card"><h3>8GB</h3><p>14,000 TZS</p><button onclick="orderBundle('8GB Tigo','14,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>9GB</h3><p>15,800 TZS</p><button onclick="orderBundle('9GB Tigo','15,800 TZS')">Nunua Sasa</button></div> <div class="card"><h3>10GB</h3><p>18,000 TZS</p><button onclick="orderBundle('10GB Tigo','18,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>15GB</h3><p>26,000 TZS</p><button onclick="orderBundle('15GB Tigo','26,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>20GB</h3><p>35,000 TZS</p><button onclick="orderBundle('20GB Tigo','35,000 TZS')">Nunua Sasa</button></div>
 <p class="network-stock">
@@ -48,7 +59,7 @@
 
 </div> <h2>Bando za Halotel (Miezi 3–6)</h2>
 <p class="network-stock halotel-stock">
-⚠️ Slots zilizobaki (Halotel): <span id="haloStock">6</span>
+⚠️ Slots zilizobaki (Halotel): <span id="halotelStock"></span>
 </p>
 <p class="warning">⚠️ Bando za Halotel zinawahi kuisha! Tafadhali order mapema ili usikose.</p> <div class="container"> <div class="card"><h3>5GB</h3><p>6,000 TZS</p><button onclick="orderBundle('5GB Halotel','6,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>7GB</h3><p>8,000 TZS</p><button onclick="orderBundle('7GB Halotel','8,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>8GB</h3><p>9,000 TZS</p><button onclick="orderBundle('8GB Halotel','9,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>10GB</h3><p>10,000 TZS</p><button onclick="orderBundle('10GB Halotel','10,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>15GB</h3><p>15,000 TZS</p><button onclick="orderBundle('15GB Halotel','15,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>20GB</h3><p>19,000 TZS</p><button onclick="orderBundle('20GB Halotel','19,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>35GB</h3><p>33,000 TZS</p><button onclick="orderBundle('35GB Halotel','33,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>43GB</h3><p>35,000 TZS</p><button onclick="orderBundle('43GB Halotel','35,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>50GB</h3><p>45,000 TZS</p><button onclick="orderBundle('50GB Halotel','45,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>60GB</h3><p>55,000 TZS</p><button onclick="orderBundle('60GB Halotel','55,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>100GB</h3><p>80,000 TZS</p><button onclick="orderBundle('100GB Halotel','80,000 TZS')">Nunua Sasa</button></div> </div>
 
@@ -307,6 +318,30 @@ function toggleWA() {
     menu.style.display = (menu.style.display === "block") ? "none" : "block";
 }
 </script>
+<script>
+function getRandomStock(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
+let tigoStock = getRandomStock(20, 40);
+let halotelStock = getRandomStock(5, 15);
+
+document.getElementById("tigoStock").innerText = tigoStock;
+document.getElementById("halotelStock").innerText = halotelStock;
+
+setInterval(() => {
+    if (tigoStock > 0) {
+        tigoStock--;
+        document.getElementById("tigoStock").innerText = tigoStock;
+    }
+}, Math.random() * 60000 + 30000);
+
+setInterval(() => {
+    if (halotelStock > 0) {
+        halotelStock--;
+        document.getElementById("halotelStock").innerText = halotelStock;
+    }
+}, Math.random() * 80000 + 40000);
+</script>
 </body>
 </html>
