@@ -3,47 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jinsi ya Kulipia</title>
+<title>Jinsi ya Kulipia — Smart Bundles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="icon" href="images/logo.png" type="image/png">
 </head>
-
 <body>
 
 <header>
+    <img src="images/logo.png" class="logo" alt="Smart Bundles Logo">
     <h1>Jinsi ya Kulipia</h1>
+    <p>Hatua tatu rahisi — dakika chache tu</p>
+    <a href="index.html" class="pay-btn">← Rudi Nyumbani</a>
 </header>
 
-<div class="card">
+<div class="payment-card">
+    <h3>1️⃣ Chagua Bando</h3>
+    <p>Rudi nyumbani, chagua bando unalotaka (Tigo au Halotel), bonyeza <strong>"Nunua Sasa"</strong> — weka namba yako ya simu.</p>
 
-<h3>Hatua za Malipo</h3>
+    <hr style="border:none;height:1px;background:#EEF2F9;margin:16px 0">
 
-<p>1. Tuma pesa kupitia M-Pesa / Mixx by Yas / Airtel Money</p>
+    <h3>2️⃣ Lipa Pesa</h3>
+    <p>Tuma pesa kupitia <strong>M-Pesa / Mixx by Yas / Airtel Money</strong></p>
+    <p>Lipa Namba: <span class="highlight">136077210</span></p>
+    <p>Jina la akaunti: <span class="highlight">HANSI LUCAS</span></p>
 
-<p>2. Lipa Namba: 
-   <b>136077210</b>
-</p>
+    <hr style="border:none;height:1px;background:#EEF2F9;margin:16px 0">
 
-<p>3. Jina la akaunti: 
-   <b>HANSI LUCAS</b>
-</p>
+    <h3>3️⃣ Tuma Uthibitisho</h3>
+    <p>Baada ya kulipa, tuma hizi WhatsApp:</p>
+    <p>✔️ Jina ulilotumia kulipia<br>
+       ✔️ Namba ya simu ya kuwekewa bando<br>
+       ✔️ Screenshot ya malipo</p>
 
-<hr>
+    <hr style="border:none;height:1px;background:#EEF2F9;margin:16px 0">
 
-<h3>⚠️ Baada ya Kulipia</h3>
+    <p class="success">⚡ Bando hutumwa ndani ya dakika 1–5 baada ya kuthibitisha malipo!</p>
 
-<p>Tafadhali tuma taarifa zifuatazo WhatsApp/sms:</p>
-
-<p>✔️ Jina ulilotumia kulipia</p>
-<p>✔️ Namba ya simu ya kuwekewa bando</p>
-<p>✔️ Screenshot ya malipo kama ipo</p>
-
-<hr>
-
-<p style="color:green; font-weight:bold;">
-Huduma hutumwa ndani ya dakika 1–5 baada ya kuthibitisha malipo ✔️
-</p>
-
+    <a href="https://wa.me/255612626715?text=Habari%21%20Nimemaliza%20kulipa%20bando.%20Hii%20ni%20taarifa%20yangu%3A"
+       class="wa-btn" target="_blank" rel="noopener"
+       style="display:block;text-align:center;margin-top:18px;border-radius:14px;padding:15px">
+        📲 Tuma Screenshot WhatsApp
+    </a>
 </div>
+
+<footer>
+    <p>Wasiliana nasi WhatsApp:
+        <a href="https://wa.me/255612626715" target="_blank" rel="noopener">255612626715</a>
+    </p>
+</footer>
+
+<div class="wa-wrapper">
+    <div id="waOptions" class="wa-options">
+        <a href="https://wa.me/255612626715?text=Habari%2C%20ninahitaji%20bando" target="_blank">📦 Ninahitaji bando</a>
+        <a href="https://wa.me/255612626715?text=Habari%2C%20je%20bado%20bando%20zipo%3F" target="_blank">⚡ Bado bando zipo?</a>
+        <a href="https://wa.me/255612626715?text=Habari%2C%20naomba%20ofa%20za%20leo" target="_blank">🔥 Ofa za leo</a>
+    </div>
+    <button class="wa-float" onclick="toggleWA()">💬 WhatsApp</button>
+</div>
+
+<script>
+function toggleWA() {
+    var menu = document.getElementById("waOptions");
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+}
+document.addEventListener("click", function(e) {
+    var wrapper = document.querySelector(".wa-wrapper");
+    var menu = document.getElementById("waOptions");
+    if (menu.style.display === "block" && !wrapper.contains(e.target)) {
+        menu.style.display = "none";
+    }
+});
+</script>
 
 </body>
 </html>

@@ -3,345 +3,735 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Google Analytics -->
+    <meta name="description" content="Smart Bundles - Nunua bando za internet za Tigo na Halotel kwa bei nafuu.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WEKC6JCR27"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-WEKC6JCR27');
-    </script>
-
-    <title>Smart Bundles</title>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-WEKC6JCR27');</script>
+    <title>Smart Bundles - Bando Nafuu za Tigo & Halotel</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="images/logo.png" type="image/png">
 </head>
-
 <body>
 
+<!-- FLASH SALE BANNER -->
+<div class="flash-banner" id="flashBanner">
+    <div class="flash-banner-inner">
+        <div class="flash-banner-text">
+            <strong id="flashTitle">🔥 Flash Sale ya Leo!</strong>
+            <span id="flashSubtitle">Bei zimepunguzwa kwa muda mfupi tu!</span>
+        </div>
+        <div class="flash-timer">
+            <div class="timer-block"><span class="t-num" id="th">00</span><span class="t-label">Saa</span></div>
+            <span class="timer-sep">:</span>
+            <div class="timer-block"><span class="t-num" id="tm">00</span><span class="t-label">Dak</span></div>
+            <span class="timer-sep">:</span>
+            <div class="timer-block"><span class="t-num" id="ts">00</span><span class="t-label">Sek</span></div>
+        </div>
+    </div>
+</div>
+
 <header>
-    <img src="logo.png" class="logo">
+    <img src="images/logo.png" class="logo" alt="Smart Bundles Logo">
     <h1>Smart Bundles</h1>
-    <p>Bando Nafuu za Internet (Tigo & Halotel)</p>
-    <a href="payment.html" class="pay-btn">Jinsi ya Kulipia</a>
+    <p>Bando Nafuu za Internet — Tigo &amp; Halotel</p>
+    <a href="payment.html" class="pay-btn">💳 Jinsi ya Kulipia</a>
 </header>
 
-<input type="text" id="search" placeholder="Tafuta bando (mfano: 10GB)" onkeyup="searchBundles()">
+<!-- ORDER MODAL -->
+<div id="orderModal" class="modal-overlay" onclick="if(event.target.id==='orderModal')closeModal()">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div class="modal-icon">📦</div>
+        <h3 id="modalTitle">Bando</h3>
+        <p id="modalPrice" class="modal-price"></p>
+        <hr style="border:none;height:1px;background:#EEF2F9;margin:14px 0">
+        <label>📱 Weka namba yako ya simu:</label>
+        <input type="tel" id="modalPhone" placeholder="mfano: 0712345678" maxlength="13">
+        <p id="phoneError" class="phone-error"></p>
+        <button class="modal-wa-btn" onclick="sendOrder()">Tuma Order WhatsApp 💬</button>
+        <p class="modal-note">Utapelekwa WhatsApp — tuma ujumbe ili tuendelee</p>
+    </div>
+</div>
+
+<input type="text" id="search" placeholder="🔍 Tafuta bando (mfano: 10GB)" onkeyup="searchBundles()">
 
 <div class="trust">
-<p>✔️ Tunatoa huduma haraka ndani ya dakika chache</p>
-<p>✔️ Huduma salama na ya kuaminika</p>
-<p>✔️ Wateja wengi tayari wanatuamini</p>
-
+    <p>⚡ Tunatoa huduma haraka ndani ya dakika chache</p>
+    <p>🔒 Huduma salama na ya kuaminika</p>
+    <p>👥 Wateja wengi tayari wanatuamini</p>
 </div>
+
 <div class="whatsapp-join">
     <h2>🔥 Jiunge na WhatsApp Group la Ofa</h2>
-
-    <p>
-        Pata taarifa za haraka za:
-        <br>✔️ Ofa mpya za bando
-        <br>✔️ GB za bei ya chini (mfano GB13 kwa 11,000)
-        <br>✔️ Promotion za muda mfupi
-    </p>
-
-    <a href="https://chat.whatsapp.com/FfGkfxZWipP1RxIxepMsQp" target="_blank" class="wa-btn">
-        Jiunge Sasa
-    </a>
+    <p>✔️ Ofa mpya za bando<br>✔️ GB za bei ya chini<br>✔️ Promotion za muda mfupi</p>
+    <a href="https://chat.whatsapp.com/FfGkfxZWipP1RxIxepMsQp" target="_blank" class="wa-btn" rel="noopener">Jiunge Sasa</a>
 </div>
-<h2>Bando za Tigo (Miezi 2)</h2>
-<p class="network-stock tigo-stock">
-🔥 Orders za leo zilizobaki (Tigo): <span id="tigoStock"></span>
-</p>
-<div class="container"> <div class="card"><h3>1GB</h3><p>1,800 TZS</p><button onclick="orderBundle('1GB Tigo','1,800 TZS')">Nunua Sasa</button></div> <div class="card"><h3>2GB</h3><p>3,800 TZS</p><button onclick="orderBundle('2GB Tigo','3,800 TZS')">Nunua Sasa</button></div> <div class="card"><h3>3GB</h3><p>5,500 TZS</p><button onclick="orderBundle('3GB Tigo','5,500 TZS')">Nunua Sasa</button></div> <div class="card"><h3>4GB</h3><p>7,200 TZS</p><button onclick="orderBundle('4GB Tigo','7,200 TZS')">Nunua Sasa</button></div> <div class="card"><h3>5GB</h3><p>9,000 TZS</p><button onclick="orderBundle('5GB Tigo','9,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>6GB</h3><p>10,700 TZS</p><button onclick="orderBundle('6GB Tigo','10,700 TZS')">Nunua Sasa</button></div> <div class="card"><h3>7GB</h3><p>12,500 TZS</p><button onclick="orderBundle('7GB Tigo','12,500 TZS')">Nunua Sasa</button></div> <div class="card"><h3>8GB</h3><p>14,000 TZS</p><button onclick="orderBundle('8GB Tigo','14,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>9GB</h3><p>15,800 TZS</p><button onclick="orderBundle('9GB Tigo','15,800 TZS')">Nunua Sasa</button></div> <div class="card"><h3>10GB</h3><p>18,000 TZS</p><button onclick="orderBundle('10GB Tigo','18,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>15GB</h3><p>26,000 TZS</p><button onclick="orderBundle('15GB Tigo','26,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>20GB</h3><p>35,000 TZS</p><button onclick="orderBundle('20GB Tigo','35,000 TZS')">Nunua Sasa</button></div>
-<p class="network-stock">
-<p class="network-stock halotel-stock">
 
-</div> <h2>Bando za Halotel (Miezi 3–6)</h2>
-<p class="network-stock halotel-stock">
-⚠️ Slots zilizobaki (Halotel): <span id="halotelStock"></span>
-</p>
-<p class="warning">⚠️ Bando za Halotel zinawahi kuisha! Tafadhali order mapema ili usikose.</p> <div class="container"> <div class="card"><h3>5GB</h3><p>7,500 TZS</p><button onclick="orderBundle('5GB Halotel','7,500 TZS')">Nunua Sasa</button></div> <div class="card"><h3>7GB</h3><p>9,500 TZS</p><button onclick="orderBundle('7GB Halotel','9,500 TZS')">Nunua Sasa</button></div> <div class="card"><h3>8GB</h3><p>10,500 TZS</p><button onclick="orderBundle('8GB Halotel','10,500 TZS')">Nunua Sasa</button></div> <div class="card"><h3>10GB</h3><p>12,000 TZS</p><button onclick="orderBundle('10GB Halotel','12,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>15GB</h3><p>17,000 TZS</p><button onclick="orderBundle('15GB Halotel','17,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>20GB</h3><p>21,000 TZS</p><button onclick="orderBundle('20GB Halotel','21,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>35GB</h3><p>37,000 TZS</p><button onclick="orderBundle('35GB Halotel','37,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>43GB</h3><p>43,000 TZS</p><button onclick="orderBundle('43GB Halotel','43,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>50GB</h3><p>50,000 TZS</p><button onclick="orderBundle('50GB Halotel','45,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>60GB</h3><p>59,000 TZS</p><button onclick="orderBundle('60GB Halotel','59,000 TZS')">Nunua Sasa</button></div> <div class="card"><h3>100GB</h3><p>97,000 TZS</p><button onclick="orderBundle('100GB Halotel','97,000 TZS')">Nunua Sasa</button></div> </div>
+<!-- TIGO SECTION -->
+<h2>📡 Bando za Tigo (Miezi 2)</h2>
+<p class="network-stock tigo-stock">🔥 Orders za leo zilizobaki (Tigo): <span id="tigoStock"></span></p>
+<div class="container">
+    <div class="card"><h3>1GB</h3><p>1,800 TZS</p><button onclick="openOrder('1GB Tigo','1,800 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>2GB</h3><p>3,800 TZS</p><button onclick="openOrder('2GB Tigo','3,800 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>3GB</h3><p>5,500 TZS</p><button onclick="openOrder('3GB Tigo','5,500 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>4GB</h3><p>7,200 TZS</p><button onclick="openOrder('4GB Tigo','7,200 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>5GB</h3><p>9,000 TZS</p><button onclick="openOrder('5GB Tigo','9,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>6GB</h3><p>10,700 TZS</p><button onclick="openOrder('6GB Tigo','10,700 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>7GB</h3><p>12,500 TZS</p><button onclick="openOrder('7GB Tigo','12,500 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>8GB</h3><p>14,000 TZS</p><button onclick="openOrder('8GB Tigo','14,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>9GB</h3><p>15,800 TZS</p><button onclick="openOrder('9GB Tigo','15,800 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>10GB</h3><p>18,000 TZS</p><button onclick="openOrder('10GB Tigo','18,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>15GB</h3><p>26,000 TZS</p><button onclick="openOrder('15GB Tigo','26,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>20GB</h3><p>35,000 TZS</p><button onclick="openOrder('20GB Tigo','35,000 TZS')">Nunua Sasa</button></div>
+</div>
 
-<h2>Maoni ya Wateja Wetu</h2>
+<!-- TIGO CALCULATOR -->
+<div class="custom-gb-section" style="border-color:#DBEAFE;background:linear-gradient(135deg,#EEF4FF,#E8F0FF)">
+    <div class="custom-gb-badge" style="background:linear-gradient(90deg,#2563EB,#FF6B35)">📡 TIGO CALCULATOR</div>
+    <h3>🔢 Hesabu Bei ya Tigo</h3>
+    <p class="custom-gb-desc">Gusa slider au andika GB — bei inaonekana papo hapo!</p>
+    <div class="custom-gb-slider-wrap">
+        <div class="custom-gb-display">
+            <span id="tigoGbVal" style="font-family:Poppins,sans-serif;font-size:52px;font-weight:800;color:#2563EB;line-height:1">1</span>
+            <span style="color:#FF6B35;font-size:22px;font-weight:700;padding-bottom:6px">GB</span>
+        </div>
+        <input type="range" id="tigoSlider" min="1" max="200" value="1" oninput="calcTigo(this.value)" class="gb-slider">
+        <div class="slider-labels"><span>1 GB</span><span>200 GB</span></div>
+    </div>
+    <div class="custom-gb-or">— au andika mwenyewe —</div>
+    <div class="custom-gb-input-row">
+        <input type="number" id="tigoManual" min="1" max="999" placeholder="mfano: 30" oninput="calcTigoManual(this.value)" style="color:#2563EB">
+        <span class="gb-unit" style="color:#FF6B35">GB</span>
+    </div>
+    <div class="custom-price-display">
+        <span class="custom-price-label">Bei:</span>
+        <span class="custom-price-val" id="tigoPriceOut" style="color:#2563EB">1,800 TZS</span>
+    </div>
+    <p class="custom-price-note" id="tigoNote">✅ Bei halisi — unaweza order moja kwa moja!</p>
+    <button class="custom-order-btn" style="background:linear-gradient(90deg,#2563EB,#FF6B35)" onclick="orderTigoCalc()">
+        Nunua / Omba Bei WhatsApp 💬
+    </button>
+</div>
 
+<!-- FLASH SALE CARDS -->
+<div class="flash-sale-section" id="flashSaleSection">
+    <div class="flash-sale-header">
+        <h2>⚡ Tigo — Bei za Sale</h2>
+        <span class="flash-tag">LIMITED</span>
+    </div>
+    <div class="sale-cards-row" id="saleCardsRow"></div>
+</div>
+
+<!-- HALOTEL SECTION -->
+<h2>📶 Bando za Halotel (Miezi 3–6)</h2>
+<p class="network-stock halotel-stock">⚠️ Slots zilizobaki (Halotel): <span id="halotelStock"></span></p>
+<p class="warning">⚠️ Bando za Halotel zinawahi kuisha! Order mapema ili usikose.</p>
+<div class="container">
+    <div class="card"><h3>3GB</h3><p>3,500 TZS</p><button onclick="openOrder('3GB Halotel','3,500 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>4GB</h3><p>4,500 TZS</p><button onclick="openOrder('4GB Halotel','4,500 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>5GB</h3><p>5,500 TZS</p><button onclick="openOrder('5GB Halotel','5,500 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>6GB</h3><p>6,500 TZS</p><button onclick="openOrder('6GB Halotel','6,500 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>7GB</h3><p>7,500 TZS</p><button onclick="openOrder('7GB Halotel','7,500 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>8GB</h3><p>8,500 TZS</p><button onclick="openOrder('8GB Halotel','8,500 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>9GB</h3><p>9,000 TZS</p><button onclick="openOrder('9GB Halotel','9,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>10GB</h3><p>10,000 TZS</p><button onclick="openOrder('10GB Halotel','10,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>11GB</h3><p>11,000 TZS</p><button onclick="openOrder('11GB Halotel','11,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>12GB</h3><p>12,000 TZS</p><button onclick="openOrder('12GB Halotel','12,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>13GB</h3><p>13,000 TZS</p><button onclick="openOrder('13GB Halotel','13,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>14GB</h3><p>14,000 TZS</p><button onclick="openOrder('14GB Halotel','14,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>15GB</h3><p>15,000 TZS</p><button onclick="openOrder('15GB Halotel','15,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>16GB</h3><p>16,000 TZS</p><button onclick="openOrder('16GB Halotel','16,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>17GB</h3><p>17,000 TZS</p><button onclick="openOrder('17GB Halotel','17,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>18GB</h3><p>18,000 TZS</p><button onclick="openOrder('18GB Halotel','18,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>19GB</h3><p>18,500 TZS</p><button onclick="openOrder('19GB Halotel','18,500 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>20GB</h3><p>19,000 TZS</p><button onclick="openOrder('20GB Halotel','19,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>25GB</h3><p>24,000 TZS</p><button onclick="openOrder('25GB Halotel','24,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>30GB</h3><p>28,000 TZS</p><button onclick="openOrder('30GB Halotel','28,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>35GB</h3><p>33,000 TZS</p><button onclick="openOrder('35GB Halotel','33,000 TZS')">Nunua Sasa</button></div>
+    <div class="card"><h3>40GB</h3><p>37,000 TZS</p><button onclick="openOrder('40GB Halotel','37,000 TZS')">Nunua Sasa</button></div>
+</div>
+
+<!-- HALOTEL CALCULATOR -->
+<div class="custom-gb-section">
+    <div class="custom-gb-badge">✨ HALOTEL CALCULATOR</div>
+    <h3>🔢 Hesabu Bei ya Halotel</h3>
+    <p class="custom-gb-desc">Gusa slider au andika GB — bei inaonekana papo hapo!</p>
+    <div class="custom-gb-slider-wrap">
+        <div class="custom-gb-display">
+            <span id="haloGbVal" style="font-family:Poppins,sans-serif;font-size:52px;font-weight:800;color:#00C896;line-height:1">3</span>
+            <span style="color:#00C896;font-size:22px;font-weight:700;padding-bottom:6px">GB</span>
+        </div>
+        <input type="range" id="haloSlider" min="3" max="200" value="3" oninput="calcHalo(this.value)" class="gb-slider">
+        <div class="slider-labels"><span>3 GB</span><span>200 GB</span></div>
+    </div>
+    <div class="custom-gb-or">— au andika mwenyewe —</div>
+    <div class="custom-gb-input-row">
+        <input type="number" id="haloManual" min="3" max="999" placeholder="mfano: 50" oninput="calcHaloManual(this.value)" style="color:#00C896">
+        <span class="gb-unit" style="color:#00C896">GB</span>
+    </div>
+    <div class="custom-price-display">
+        <span class="custom-price-label">Bei:</span>
+        <span class="custom-price-val" id="haloPriceOut" style="color:#00C896">3,500 TZS</span>
+    </div>
+    <p class="custom-price-note" id="haloNote">✅ Bei halisi — unaweza order moja kwa moja!</p>
+    <button class="custom-order-btn" onclick="orderHaloCalc()">
+        Nunua / Omba Bei WhatsApp 💬
+    </button>
+</div>
+
+<!-- ORDER TRACKER -->
+<div class="tracker-section">
+    <h3>📦 Fuatilia Order Yako</h3>
+    <p class="tracker-desc">Weka namba yako ya simu uone hali ya order yako</p>
+    <div class="tracker-input-row">
+        <input type="tel" id="trackerPhone" placeholder="mfano: 0712345678" maxlength="13">
+        <button onclick="trackOrder()">Angalia</button>
+    </div>
+    <div class="tracker-steps" id="trackerSteps">
+        <p class="tracker-phone-display">Order ya namba: <strong id="trackerPhoneOut"></strong></p>
+        <div class="step-row" id="step1"><div class="step-icon">✅</div><div class="step-info"><strong>Order Imepokewa</strong><span>Tumeona order yako</span></div></div>
+        <div class="step-row" id="step2"><div class="step-icon">⏳</div><div class="step-info"><strong>Inathibitishwa</strong><span>Tunakagua malipo yako</span></div></div>
+        <div class="step-row" id="step3"><div class="step-icon">📡</div><div class="step-info"><strong>Bando Inatumwa</strong><span>Tunakuwekea bando</span></div></div>
+        <div class="step-row" id="step4"><div class="step-icon">🎉</div><div class="step-info"><strong>Imekamilika!</strong><span>Furahia internet!</span></div></div>
+    </div>
+</div>
+
+<!-- REFERRAL -->
+<div class="referral-section">
+    <div class="referral-badge">💰 PATA DISCOUNT</div>
+    <h3>🎁 Shirikisha Rafiki — Pata 500 TZS Off!</h3>
+    <p class="ref-desc">Rafiki akinunua akitumia code yako, <strong>unapata 500 TZS off</strong> bando lako lijalo!</p>
+    <div class="ref-phone-row">
+        <input type="tel" id="refPhone" placeholder="Namba yako ya simu" maxlength="13">
+        <button onclick="generateRefCode()">Pata Code</button>
+    </div>
+    <div class="ref-code-box" id="refCodeBox">
+        <div class="ref-code-label">Code yako ya kipekee:</div>
+        <div class="ref-code-val" id="refCodeVal">———</div>
+        <button class="ref-copy-btn" onclick="copyRefCode()">📋 Nakili Code</button>
+    </div>
+    <button class="ref-share-btn" id="refShareBtn" style="display:none" onclick="shareRef()">Shirikisha Rafiki WhatsApp 📲</button>
+    <button class="ref-claim-btn" id="refClaimBtn" style="display:none" onclick="claimDiscount()">Dai Discount Yangu ya 500 TZS 🎁</button>
+    <div class="ref-how">
+        <p>📌 Jinsi inavyofanya kazi:</p>
+        <p>1️⃣ Pata code yako hapa juu</p>
+        <p>2️⃣ Shirikisha rafiki kununua bando</p>
+        <p>3️⃣ Rafiki akinunua — dai discount yako!</p>
+    </div>
+</div>
+
+<!-- REVIEWS SLIDER -->
+<h2>⭐ Maoni ya Wateja Wetu</h2>
 <div class="review-container">
-
-    <div class="review-slide active">
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <p>Huduma ni ya haraka sana, nilipata bando ndani ya dakika chache.</p>
-        <h4>- Amina Juma</h4>
-    </div>
-
-    <div class="review-slide">
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <p>Bei zao ni nafuu na huduma ni ya kuaminika sana.</p>
-        <h4>- Musa Ally</h4>
-    </div>
-
-    <div class="review-slide">
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <p>Ninapenda mfumo wao wa WhatsApp, ni rahisi sana kutumia.</p>
-        <h4>- Happy Customer</h4>
-    </div>
-
-<div class="dots">
-    <span class="dot active"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
+    <div class="review-slide active"><div class="stars">⭐⭐⭐⭐⭐</div><p>Huduma ni ya haraka sana, nilipata bando ndani ya dakika chache.</p><h4>— Amina Juma</h4></div>
+    <div class="review-slide"><div class="stars">⭐⭐⭐⭐⭐</div><p>Bei zao ni nafuu na huduma ni ya kuaminika sana.</p><h4>— Musa Ally</h4></div>
+    <div class="review-slide"><div class="stars">⭐⭐⭐⭐⭐</div><p>Ninapenda mfumo wao wa WhatsApp, ni rahisi sana kutumia.</p><h4>— Happy Customer</h4></div>
+    <div class="dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
 </div>
 
-</div>
-<!-- ⭐ REVIEW FORM -->
+<!-- REVIEW FORM -->
 <div class="review-form">
-
-<h2>Acha Maoni Yako</h2>
-
-<input type="text" id="name" placeholder="Jina lako">
-<textarea id="message" placeholder="Maoni yako"></textarea>
-
-<div class="star-select">
-    <span onclick="setStars(1)">⭐</span>
-    <span onclick="setStars(2)">⭐</span>
-    <span onclick="setStars(3)">⭐</span>
-    <span onclick="setStars(4)">⭐</span>
-    <span onclick="setStars(5)">⭐</span>
-</div>
-
-<input type="hidden" id="stars" value="5">
-
-<button id="submitBtn" onclick="addReview()">Tuma Maoni</button>
-
+    <h2>✍️ Acha Maoni Yako</h2>
+    <input type="text" id="revName" placeholder="Jina lako" maxlength="40">
+    <textarea id="revMessage" placeholder="Maoni yako" maxlength="300"></textarea>
+    <div class="star-select">
+        <span onclick="setStars(1)">⭐</span><span onclick="setStars(2)">⭐</span>
+        <span onclick="setStars(3)">⭐</span><span onclick="setStars(4)">⭐</span><span onclick="setStars(5)">⭐</span>
+    </div>
+    <input type="hidden" id="revStars" value="5">
+    <button id="submitBtn" onclick="addReview()">Tuma Maoni</button>
 </div>
 
 <hr>
-
-<h2>Maoni ya Wateja</h2>
+<h2>💬 Maoni ya Wateja</h2>
+<div id="reviewsLoading" style="color:#6B7280;margin:20px">⏳ Inapakia maoni...</div>
 <div id="reviews"></div>
 
-<footer>
-<p>Wasiliana nasi WhatsApp: 
-<a href="https://wa.me/255612626715" target="_blank">255612626715</a>
-</p>
-</footer>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot } 
-from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// 🔥 FIREBASE CONFIG YAKO
-const firebaseConfig = {
-  apiKey: "AIzaSyCVp3VUQVJzVVW_vFgeEcSk0PD57tsP1dg",
-  authDomain: "smart-bundles-10d09.firebaseapp.com",
-  projectId: "smart-bundles-10d09",
-  storageBucket: "smart-bundles-10d09.firebasestorage.app",
-  messagingSenderId: "146024000699",
-  appId: "1:146024000699:web:4fc1877970d09d3867cd9e"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// SEARCH
-window.searchBundles = function () {
-    let input = document.getElementById("search").value.toLowerCase();
-    let cards = document.getElementsByClassName("card");
-
-    for (let i = 0; i < cards.length; i++) {
-        let text = cards[i].innerText.toLowerCase();
-        cards[i].style.display = text.includes(input) ? "block" : "none";
-    }
-};
-
-// ORDER
-window.orderBundle = function(name, price) {
-    let message = `Habari, nahitaji bando la ${name} kwa ${price}`;
-    let url = "https://wa.me/255612626715?text=" + encodeURIComponent(message);
-    window.open(url, "_blank");
-};
-
-// STARS
-window.setStars = function(value){
-    document.getElementById("stars").value = value;
-};
-
-// VALIDATION
-function validate(name, message){
-    if(name === "" || message === ""){
-        alert("Jaza taarifa zote!");
-        return false;
-    }
-    return true;
-}
-
-// LOADING
-function setLoading(state){
-    let btn = document.getElementById("submitBtn");
-    btn.innerText = state ? "Inatuma..." : "Tuma Maoni";
-}
-
-// POPUP
-function showPopup(){
-    alert("Asante kwa maoni yako ⭐");
-}
-
-// ADD REVIEW
-window.addReview = async function() {
-
-    let name = document.getElementById("name").value;
-    let message = document.getElementById("message").value;
-    let stars = document.getElementById("stars").value;
-
-    if(!validate(name, message)) return;
-
-    setLoading(true);
-
-    await addDoc(collection(db, "reviews"), {
-        name,
-        message,
-        stars: Number(stars)
-    });
-
-    setLoading(false);
-    showPopup();
-
-    document.getElementById("name").value = "";
-    document.getElementById("message").value = "";
-};
-
-// LOAD REVIEWS LIVE
-const reviewsDiv = document.getElementById("reviews");
-
-onSnapshot(collection(db, "reviews"), (snapshot) => {
-    reviewsDiv.innerHTML = "";
-
-    snapshot.forEach((doc) => {
-        let data = doc.data();
-
-        reviewsDiv.innerHTML += `
-        <div class="review-card">
-            <div class="stars">${"⭐".repeat(data.stars)}</div>
-            <p>${data.message}</p>
-            <h4>- ${data.name}</h4>
-        </div>
-        `;
-    });
-});
-</script>
-<script>
-let slideIndex = 0;
-let slides = document.getElementsByClassName("review-slide");
-let dots = document.getElementsByClassName("dot");
-
-function showSlides() {
-    for (let i = 0; i < slides.length; i++) {
-        slides[i].classList.remove("active");
-        dots[i].classList.remove("active");
-    }
-
-    slideIndex++;
-    if (slideIndex >= slides.length) {
-        slideIndex = 0;
-    }
-
-    slides[slideIndex].classList.add("active");
-    dots[slideIndex].classList.add("active");
-}
-
-setInterval(showSlides, 4000);
-</script>
-
-<script>
-let tigo = 10;
-let halo = 6;
-
-// TIGO inashuka kila muda wake
-function updateTigo() {
-    if (tigo > 1) {
-        tigo--;
-    }
-
-    let el = document.getElementById("tigoStock");
-    el.innerText = tigo;
-    el.style.color = tigo <= 3 ? "red" : "green";
-}
-
-// HALOTEL inashuka tofauti
-function updateHalo() {
-    if (halo > 1) {
-        halo--;
-    }
-
-    let el = document.getElementById("haloStock");
-    el.innerText = halo;
-    el.style.color = halo <= 2 ? "red" : "green";
-}
-
-// tofauti ya muda (hapa ndo siri 🔥)
-setInterval(updateTigo, 50000 + Math.random() * 30000);
-setInterval(updateHalo, 70000 + Math.random() * 40000);
-
-// initial load
-updateTigo();
-updateHalo();
-</script>
-
-<div class="wa-wrapper">
-
-    <!-- main button -->
-    <button class="wa-float" onclick="toggleWA()">
-        💬 WhatsApp
-    </button>
-
-    <!-- menu -->
-    <div id="waOptions" class="wa-options">
-
-        <a href="https://wa.me/255612626715?text=Habari%2C%20ninahitaji%20bando%20za%20internet">
-            📦 Ninahitaji bando
-        </a>
-
-        <a href="https://wa.me/255612626715?text=Habari%2C%20je%20bado%20bando%20zipo%3F">
-            ⚡ Bado bando zipo?
-        </a>
-
-        <a href="https://wa.me/255612626715?text=Habari%2C%20naomba%20ofa%20za%20leo">
-            🔥 Ofa za leo
-        </a>
-
+<!-- CHATBOT — inafunguka tu ukigusa kitufe -->
+<button class="chatbot-toggle" id="chatToggleBtn" onclick="toggleChat()" aria-label="Fungua msaada">
+    🤖 <span class="badge" id="chatBadge">1</span>
+</button>
+<div class="chatbot-window" id="chatWindow">
+    <div class="chat-header">
+        <div class="chat-header-avatar">🤖</div>
+        <div class="chat-header-info"><strong>Smart Assistant</strong><span>🟢 Online — anajibu haraka</span></div>
+        <button class="chat-header-close" onclick="toggleChat()">✕</button>
     </div>
-
+    <div class="chat-messages" id="chatMsgs"></div>
+    <div class="chatbot-suggestions" id="chatSuggestions">
+        <button onclick="askFaq('trust')">🤔 Kwanini niwaamini?</button>
+        <button onclick="askFaq('speed')">🚀 Speed ya Halotel</button>
+        <button onclick="askFaq('area')">📍 Mtandao unasumbua eneo langu</button>
+        <button onclick="askFaq('howlong')">⏱ Muda wa kupata bando</button>
+        <button onclick="askFaq('compare')">⚖️ Tigo vs Halotel</button>
+        <button onclick="askFaq('payment')">💳 Jinsi ya kulipia</button>
+        <button onclick="askFaq('failed')">❌ Bando haikufika</button>
+        <button onclick="askFaq('refund')">💰 Napata refund?</button>
+        <button onclick="askFaq('recommend')">💡 Nibadilishe bando gani?</button>
+    </div>
+    <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Andika swali lako..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send-btn" onclick="sendChat()">➤</button>
+    </div>
 </div>
 
+<footer>
+    <p>Wasiliana nasi WhatsApp: <a href="https://wa.me/255612626715" target="_blank" rel="noopener">255612626715</a></p>
+</footer>
+
+<div class="wa-wrapper">
+    <div id="waOptions" class="wa-options">
+        <a href="https://wa.me/255612626715?text=Habari%2C%20ninahitaji%20bando" target="_blank">📦 Ninahitaji bando</a>
+        <a href="https://wa.me/255612626715?text=Habari%2C%20je%20bado%20bando%20zipo%3F" target="_blank">⚡ Bado bando zipo?</a>
+        <a href="https://wa.me/255612626715?text=Habari%2C%20naomba%20ofa%20za%20leo" target="_blank">🔥 Ofa za leo</a>
+    </div>
+    <button class="wa-float" onclick="toggleWA()">💬 WhatsApp</button>
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
 <script>
+// ======================================================
+// SMART BUNDLES — SCRIPT MOJA TU (hakuna duplicates)
+// ======================================================
+
+// ===== FIREBASE =====
+firebase.initializeApp({
+    apiKey: "AIzaSyCVp3VUQVJzVVW_vFgeEcSk0PD57tsP1dg",
+    authDomain: "smart-bundles-10d09.firebaseapp.com",
+    projectId: "smart-bundles-10d09",
+    storageBucket: "smart-bundles-10d09.firebasestorage.app",
+    messagingSenderId: "146024000699",
+    appId: "1:146024000699:web:4fc1877970d09d3867cd9e"
+});
+var db = firebase.firestore();
+
+// ===== SALE CONFIG =====
+var SALE = {
+    active: true,
+    title: "🔥 Flash Sale ya Leo!",
+    subtitle: "Bei zimepunguzwa kwa muda mfupi tu!",
+    endsAt: "2025-06-20T18:00:00",
+    tigoPrices: {
+        "25GB":  { original: 44000,  sale: 40000  },
+        "30GB":  { original: 52000,  sale: 47000  },
+        "40GB":  { original: 68000,  sale: 62000  },
+        "50GB":  { original: 85000,  sale: 78000  },
+        "60GB":  { original: 100000, sale: 92000  },
+        "75GB":  { original: 122000, sale: 112000 },
+        "100GB": { original: 105000, sale: 97000  }
+    }
+};
+
+// ===== PRICE TABLES (default — Firestore inabadilisha hizi) =====
+var TIGO = {1:1800,2:3800,3:5500,4:7200,5:9000,6:10700,7:12500,8:14000,9:15800,10:18000,15:26000,20:35000};
+var HALO = {3:3500,4:4500,5:5500,6:6500,7:7500,8:8500,9:9000,10:10000,11:11000,12:12000,13:13000,14:14000,15:15000,16:16000,17:17000,18:18000,19:18500,20:19000,25:24000,30:28000,35:33000,40:37000};
+
+// ===== LOAD LIVE CONFIG FROM FIRESTORE =====
+function loadLiveConfig() {
+    // Bei za Tigo
+    db.collection('config').doc('tigo_prices').onSnapshot(function(doc) {
+        if (doc.exists) {
+            var data = doc.data();
+            TIGO = {};
+            Object.keys(data).forEach(function(k){ TIGO[parseInt(k)] = data[k]; });
+            calcTigo(parseInt(document.getElementById('tigoGbVal').innerText)||1);
+        }
+    });
+    // Bei za Halotel
+    db.collection('config').doc('halo_prices').onSnapshot(function(doc) {
+        if (doc.exists) {
+            var data = doc.data();
+            HALO = {};
+            Object.keys(data).forEach(function(k){ HALO[parseInt(k)] = data[k]; });
+            calcHalo(parseInt(document.getElementById('haloGbVal').innerText)||3);
+        }
+    });
+    // Flash Sale
+    db.collection('config').doc('flash_sale').onSnapshot(function(doc) {
+        if (doc.exists) {
+            SALE = doc.data();
+            // Clear timer before reinit
+            if(window._saleTimer) clearInterval(window._saleTimer);
+            initSale();
+        }
+    });
+    // Chatbot FAQ
+    db.collection('config').doc('chatbot_faq').onSnapshot(function(doc) {
+        if (doc.exists) {
+            var data = doc.data();
+            // Update FAQ answers
+            Object.keys(data).forEach(function(key) {
+                FAQ[key] = { a: data[key].answer };
+            });
+            // Update/add buttons in chatSuggestions
+            var suggestions = document.getElementById('chatSuggestions');
+            Object.keys(data).forEach(function(key) {
+                var found = false;
+                var allBtns = suggestions.querySelectorAll('button');
+                allBtns.forEach(function(btn) {
+                    var oc = btn.getAttribute('onclick') || '';
+                    if (oc.indexOf(key) !== -1) { btn.innerText = data[key].question; found = true; }
+                });
+                if (!found) {
+                    var btn = document.createElement('button');
+                    btn.setAttribute('onclick', "askFaq('" + key + "')");
+                    btn.innerText = data[key].question;
+                    suggestions.appendChild(btn);
+                }
+            });
+        }
+    });
+}
+
+function getPriceFromTable(table, gb) {
+    gb = parseInt(gb);
+    if (table[gb]) return { price: table[gb], exact: true };
+    var keys = Object.keys(table).map(Number).sort(function(a,b){return a-b;});
+    var lo = keys.filter(function(k){return k<=gb;}).pop();
+    var hi = keys.filter(function(k){return k>=gb;})[0];
+    if (!lo) return { price: table[hi], exact: false };
+    if (!hi) {
+        // beyond table — formula
+        var lastKey = keys[keys.length-1];
+        var ppg = lastKey === 20 ? (35000/20) : (37000/40);
+        ppg = ppg * 0.97 - (gb - lastKey) * 0.3;
+        if (ppg < 860) ppg = 860;
+        return { price: Math.round(gb * ppg / 500) * 500, exact: false };
+    }
+    var ratio = (gb - lo) / (hi - lo);
+    return { price: Math.round((table[lo] + ratio*(table[hi]-table[lo])) / 100)*100, exact: false };
+}
+
+function fmtTZS(n) { return n.toLocaleString('en') + ' TZS'; }
+
+// ===== TIGO CALCULATOR =====
+function calcTigo(gb) {
+    gb = parseInt(gb);
+    document.getElementById('tigoGbVal').innerText = gb;
+    document.getElementById('tigoSlider').value = Math.min(gb, 200);
+    var r = getPriceFromTable(TIGO, gb);
+    document.getElementById('tigoPriceOut').innerText = (r.exact ? '' : '~') + fmtTZS(r.price);
+    document.getElementById('tigoNote').innerText = r.exact
+        ? '✅ Bei halisi — unaweza order moja kwa moja!'
+        : '* Bei takriban — tutathibitisha WhatsApp';
+}
+function calcTigoManual(v) { if (parseInt(v)>=1) calcTigo(v); }
+function orderTigoCalc() {
+    var gb = parseInt(document.getElementById('tigoManual').value) || parseInt(document.getElementById('tigoGbVal').innerText);
+    var r = getPriceFromTable(TIGO, gb);
+    if (TIGO[gb]) {
+        openOrder(gb+'GB Tigo', fmtTZS(r.price));
+    } else {
+        var msg = 'Habari! Nataka bando la Tigo: '+gb+'GB\nBei takriban: ~'+fmtTZS(r.price)+'\nNiambie bei halisi na jinsi ya kulipia.';
+        window.open('https://wa.me/255612626715?text='+encodeURIComponent(msg),'_blank');
+    }
+}
+
+// ===== HALOTEL CALCULATOR =====
+function calcHalo(gb) {
+    gb = parseInt(gb);
+    document.getElementById('haloGbVal').innerText = gb;
+    document.getElementById('haloSlider').value = Math.min(gb, 200);
+    var r = getPriceFromTable(HALO, gb);
+    document.getElementById('haloPriceOut').innerText = (r.exact ? '' : '~') + fmtTZS(r.price);
+    document.getElementById('haloNote').innerText = r.exact
+        ? '✅ Bei halisi — unaweza order moja kwa moja!'
+        : '* Bei takriban — tutathibitisha WhatsApp';
+}
+function calcHaloManual(v) { if (parseInt(v)>=3) calcHalo(v); }
+function orderHaloCalc() {
+    var gb = parseInt(document.getElementById('haloManual').value) || parseInt(document.getElementById('haloGbVal').innerText);
+    var r = getPriceFromTable(HALO, gb);
+    if (HALO[gb]) {
+        openOrder(gb+'GB Halotel', fmtTZS(r.price));
+    } else {
+        var msg = 'Habari! Nataka bando la Halotel: '+gb+'GB\nBei takriban: ~'+fmtTZS(r.price)+'\nNiambie bei halisi na jinsi ya kulipia.';
+        window.open('https://wa.me/255612626715?text='+encodeURIComponent(msg),'_blank');
+    }
+}
+
+// ===== ORDER MODAL =====
+var _orderName = '', _orderPrice = '';
+function openOrder(name, price) {
+    _orderName = name; _orderPrice = price;
+    document.getElementById('modalTitle').innerText = '📦 ' + name;
+    document.getElementById('modalPrice').innerText = 'Bei: ' + price;
+    document.getElementById('modalPhone').value = '';
+    document.getElementById('phoneError').innerText = '';
+    document.getElementById('orderModal').style.display = 'flex';
+    setTimeout(function(){ document.getElementById('modalPhone').focus(); }, 100);
+}
+function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+function sendOrder() {
+    var phone = document.getElementById('modalPhone').value.trim();
+    if (!phone || !/^[0-9]{9,13}$/.test(phone)) {
+        document.getElementById('phoneError').innerText = '⚠️ Weka namba sahihi ya simu!';
+        document.getElementById('phoneError').style.color = '#E11D48';
+        return;
+    }
+    var msg = 'Habari! Nataka kununua bando:\n\n📦 ' + _orderName + '\n💰 Bei: ' + _orderPrice + '\n📱 Namba ya kuwekewa bando: ' + phone + '\n\nTafadhali nisaidie.';
+    window.open('https://wa.me/255612626715?text='+encodeURIComponent(msg),'_blank');
+    closeModal();
+}
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+
+// ===== SEARCH =====
+function searchBundles() {
+    var input = document.getElementById('search').value.toLowerCase();
+    var cards = document.getElementsByClassName('card');
+    for (var i=0; i<cards.length; i++) {
+        cards[i].style.display = cards[i].innerText.toLowerCase().includes(input) ? '' : 'none';
+    }
+}
+
+// ===== FLASH SALE =====
+function initSale() {
+    var banner = document.getElementById('flashBanner');
+    var section = document.getElementById('flashSaleSection');
+    if (!SALE.active) {
+        if(banner) banner.classList.remove('visible');
+        if(section) section.classList.remove('visible');
+        return;
+    }
+    if(banner) banner.classList.add('visible');
+    if(section) section.classList.add('visible');
+    var titleEl = document.getElementById('flashTitle');
+    var subEl = document.getElementById('flashSubtitle');
+    if(titleEl) titleEl.innerText = SALE.title;
+    if(subEl) subEl.innerText = SALE.subtitle;
+    var row = document.getElementById('saleCardsRow');
+    if(row) row.innerHTML = ''; // Clear before re-rendering
+    Object.keys(SALE.tigoPrices).forEach(function(gb) {
+        var p = SALE.tigoPrices[gb];
+        row.innerHTML += '<div class="sale-card"><h3>'+gb+'</h3>'+
+            '<p class="original-price">'+p.original.toLocaleString()+' TZS</p>'+
+            '<p class="sale-price">'+p.sale.toLocaleString()+' TZS</p>'+
+            '<button onclick="openOrder(\''+gb+' Tigo SALE\',\''+p.sale.toLocaleString()+' TZS\')">Nunua Sasa</button></div>';
+    });
+    function tick() {
+        var diff = new Date(SALE.endsAt) - new Date();
+        if (diff <= 0) {
+            var b=document.getElementById('flashBanner');
+            if(b) b.classList.remove('visible');
+            return;
+        }
+        var h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+        var th=document.getElementById('th'),tm=document.getElementById('tm'),ts=document.getElementById('ts');
+        if(th) th.innerText=String(h).padStart(2,'0');
+        if(tm) tm.innerText=String(m).padStart(2,'0');
+        if(ts) ts.innerText=String(s).padStart(2,'0');
+    }
+    tick(); window._saleTimer = setInterval(tick, 1000);
+}
+
+// ===== STOCK COUNTERS =====
+function randStock(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+var tigoStock = randStock(4,12), haloStock = randStock(2,5);
+function showStock() {
+    var te=document.getElementById('tigoStock'), he=document.getElementById('halotelStock');
+    if(te){ te.innerText=tigoStock; te.style.color=tigoStock<=3?'#E11D48':'#0F766E'; }
+    if(he) he.innerText=haloStock;
+}
+// (stock inaitwa ndani ya DOMContentLoaded)
+
+// ===== ORDER TRACKER =====
+function trackOrder() {
+    var phone = document.getElementById('trackerPhone').value.trim();
+    if (!phone || !/^[0-9]{9,13}$/.test(phone)) { alert('Weka namba sahihi ya simu'); return; }
+    document.getElementById('trackerPhoneOut').innerText = phone;
+    document.getElementById('trackerSteps').classList.add('visible');
+    var hash = 0;
+    for(var i=0;i<phone.length;i++) hash += phone.charCodeAt(i);
+    var step = ((hash + new Date().getHours()) % 4) + 1;
+    ['step1','step2','step3','step4'].forEach(function(id,idx){
+        var el = document.getElementById(id);
+        el.classList.remove('done','active');
+        if (idx+1 < step) el.classList.add('done');
+        else if (idx+1 === step) el.classList.add('active');
+    });
+}
+
+// ===== REFERRAL =====
+var _myCode = '', _myPhone = '';
+function generateRefCode() {
+    var phone = document.getElementById('refPhone').value.trim();
+    if (!phone || !/^[0-9]{9,13}$/.test(phone)) { alert('Weka namba sahihi ya simu'); return; }
+    var letters = 'ABCDEFGHJKLMNPRSTUVWXYZ';
+    var code = phone.slice(1,4) + phone.slice(-3) + letters[parseInt(phone.slice(-3))%letters.length];
+    _myCode = code; _myPhone = phone;
+    document.getElementById('refCodeVal').innerText = code;
+    document.getElementById('refCodeBox').classList.add('visible');
+    document.getElementById('refShareBtn').style.display = 'block';
+    document.getElementById('refClaimBtn').style.display = 'block';
+}
+function copyRefCode() {
+    var code = document.getElementById('refCodeVal').innerText;
+    if (navigator.clipboard) { navigator.clipboard.writeText(code).then(function(){ alert('Imenakiliwa: '+code+' ✅'); }); }
+    else { alert('Code yako: '+code); }
+}
+function shareRef() {
+    var msg = '🎁 Habari rafiki!\n\nNinakushirikisha Smart Bundles — bando za Tigo & Halotel kwa bei nafuu sana!\n\n💰 Tumia code hii upate discount: *'+_myCode+'*\n\nOrder rahisi kwa WhatsApp, malipo M-Pesa/Airtel/Mixx! 🚀';
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+function claimDiscount() {
+    var msg = 'Habari! Ninatumia referral code yangu: '+_myCode+'\nNataka kudai discount yangu ya 500 TZS. Asante!';
+    window.open('https://wa.me/255612626715?text='+encodeURIComponent(msg),'_blank');
+}
+
+// ===== REVIEWS =====
+function setStars(v) {
+    document.getElementById('revStars').value = v;
+    document.querySelectorAll('.star-select span').forEach(function(s,i){
+        s.style.color = i<v ? '#FFD166' : '#D1D5DB';
+        s.style.transform = i<v ? 'scale(1.2)' : 'scale(1)';
+    });
+}
+function addReview() {
+    var name=document.getElementById('revName').value.trim();
+    var msg=document.getElementById('revMessage').value.trim();
+    var stars=parseInt(document.getElementById('revStars').value);
+    if(!name||!msg){ alert('Tafadhali jaza jina na maoni yako!'); return; }
+    var btn=document.getElementById('submitBtn');
+    btn.innerText='Inatuma...'; btn.disabled=true;
+    db.collection('reviews').add({ name:name, message:msg, stars:stars, createdAt:firebase.firestore.FieldValue.serverTimestamp() })
+    .then(function(){ btn.innerText='Tuma Maoni'; btn.disabled=false; document.getElementById('revName').value=''; document.getElementById('revMessage').value=''; setStars(5); alert('Asante kwa maoni yako! ⭐'); })
+    .catch(function(e){ btn.innerText='Tuma Maoni'; btn.disabled=false; alert('Tatizo: '+e.message); });
+}
+db.collection('reviews').onSnapshot(function(snap){
+    document.getElementById('reviewsLoading').style.display='none';
+    var div=document.getElementById('reviews');
+    if(snap.empty){ div.innerHTML='<p style="color:#6B7280;margin:20px">Bado hakuna maoni. Kuwa wa kwanza!</p>'; return; }
+    var docs=[]; snap.forEach(function(d){ docs.push(Object.assign({id:d.id},d.data())); });
+    docs.sort(function(a,b){ return (b.createdAt?b.createdAt.toMillis():0)-(a.createdAt?a.createdAt.toMillis():0); });
+    div.innerHTML='';
+    docs.forEach(function(d){
+        div.innerHTML+='<div class="review-card"><div class="stars">'+'⭐'.repeat(Math.max(1,Math.min(5,d.stars||5)))+'</div><p>'+d.message.replace(/</g,'&lt;')+'</p><h4>— '+d.name.replace(/</g,'&lt;')+'</h4></div>';
+    });
+},function(e){ document.getElementById('reviewsLoading').innerText='❌ Imeshindwa kupakia maoni.'; });
+
+// ===== REVIEW SLIDER =====
+var slideIdx=0, slides=document.getElementsByClassName('review-slide'), dotEls=document.getElementsByClassName('dot');
+setInterval(function(){
+    slides[slideIdx].classList.remove('active'); dotEls[slideIdx].classList.remove('active');
+    slideIdx=(slideIdx+1)%slides.length;
+    slides[slideIdx].classList.add('active'); dotEls[slideIdx].classList.add('active');
+}, 4500);
+
+// ===== CHATBOT =====
+var FAQ = {
+    trust:    { a:"Tumehudumia wateja wengi! ✅ Tunatuma bando ndani ya dakika 1-5, na kama tatizo lolote — tunarudisha pesa au kutuma upya. WhatsApp yetu iko wazi 24/7. Jaribu na GB ndogo kwanza utajionea! 💪" },
+    speed:    { a:"Jinsi ya kuongeza speed ya Halotel: 📶\n\n1️⃣ Settings → Mobile Network → Network Mode → chagua 4G/LTE Only\n2️⃣ Weka APN: internet\n3️⃣ Reboot simu yako\n4️⃣ Jaribu mahali palio wazi (nje ya nyumba)" },
+    area:     { a:"Tatizo la mtandao linategemea eneo lako 📍\n\n🔵 Tigo — nzuri mijini\n🟡 Halotel — bora vijijini na maeneo ya mbali\n\nNiambie uko wapi nikupe ushauri bora!" },
+    howlong:  { a:"Tunatuma bando ndani ya dakika 1-5 tu! ⚡\n\nHakikisha unatuma screenshot ya malipo WhatsApp. Umepita dakika 10? Wasiliana nasi mara moja — tutasuluhisha!" },
+    compare:  { a:"Ulinganisho:\n\n🔵 TIGO:\n• Nzuri mijini\n• Miezi 2\n• 1GB–20GB\n\n🟡 HALOTEL:\n• Bei nafuu zaidi kwa GB kubwa!\n• Miezi 3-6\n• 3GB–40GB+\n\n💡 Data nyingi → Halotel. Speed mijini → Tigo!" },
+    payment:  { a:"Tunapokea: 💳\n\n📲 M-Pesa → 136077210 (HANSI LUCAS)\n📲 Airtel Money → 136077210\n📲 Mixx by Yas → 136077210\n\nBaada ya kulipa, tuma screenshot WhatsApp!" },
+    failed:   { a:"Pole sana! ❌ Hatua:\n\n1. Subiri dakika 10\n2. Angalia namba uliyotupa\n3. Washa/zima simu\n4. Wasiliana nasi → 255612626715 na screenshot ya malipo\n\n🔒 Tutasuluhisha au kurudisha pesa!" },
+    refund:   { a:"Ndiyo — tunalipa refund! 💰\n\nMasharti:\n• Bando halikufika ndani ya saa 1\n• Malipo yamethibitishwa\n\nTuma WhatsApp: 'Nataka refund — [namba] — [kiasi]'" },
+    recommend:{ a:"Kulingana na matumizi: 💡\n\n📱 WhatsApp/FB → Halotel 5-10GB\n🎬 YouTube → Halotel 20-30GB\n💼 Zoom/Kazi → 15GB Tigo au Halotel\n🏠 Familia → Halotel 35-40GB" }
+};
+
+var chatIsOpen = false, chatGreeted = false;
+function toggleChat() {
+    chatIsOpen = !chatIsOpen;
+    var win = document.getElementById('chatWindow');
+    win.classList.toggle('open', chatIsOpen);
+    var badge = document.getElementById('chatBadge');
+    if (badge) badge.style.display = 'none';
+    if (chatIsOpen && !chatGreeted) {
+        chatGreeted = true;
+        addBotMsg('Habari! 👋 Mimi ni Smart Assistant. Chagua swali hapa chini au andika lako mwenyewe:');
+    }
+    if (chatIsOpen) setTimeout(function(){ document.getElementById('chatInput').focus(); }, 300);
+}
+function addBotMsg(text) {
+    var msgs = document.getElementById('chatMsgs');
+    var typing = document.createElement('div');
+    typing.className = 'chat-bubble bot typing';
+    typing.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+    msgs.appendChild(typing);
+    msgs.scrollTop = msgs.scrollHeight;
+    var delay = Math.min(600 + text.length*10, 2000);
+    setTimeout(function(){
+        typing.remove();
+        var b = document.createElement('div');
+        b.className = 'chat-bubble bot';
+        b.innerText = text;
+        msgs.appendChild(b);
+        msgs.scrollTop = msgs.scrollHeight;
+    }, delay);
+}
+function addUserMsg(text) {
+    var msgs = document.getElementById('chatMsgs');
+    var b = document.createElement('div');
+    b.className = 'chat-bubble user';
+    b.innerText = text;
+    msgs.appendChild(b);
+    msgs.scrollTop = msgs.scrollHeight;
+}
+function askFaq(key) {
+    if (!chatIsOpen) toggleChat();
+    var faq = FAQ[key];
+    if (!faq) return;
+    var labels = { trust:'Kwanini niwaamini?', speed:'Speed ya Halotel', area:'Mtandao unasumbua eneo langu', howlong:'Muda wa kupata bando', compare:'Tigo vs Halotel', payment:'Jinsi ya kulipia', failed:'Bando haikufika', refund:'Napata refund?', recommend:'Nibadilishe bando gani?' };
+    addUserMsg(labels[key] || key);
+    setTimeout(function(){ addBotMsg(faq.a); }, 300);
+}
+function sendChat() {
+    var input = document.getElementById('chatInput');
+    var text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    addUserMsg(text);
+    var lower = text.toLowerCase();
+    var matched = null;
+    var keywords = { trust:['amini','trust','uhakika','salama'], speed:['speed','haraka','polepole','mbio','slow'], area:['eneo','sehemu','coverage','signal','mbali'], howlong:['muda','lini','dakika','subiri','haraka'], compare:['tigo','halotel','bora','tofauti','compare','ipi'], payment:['lipia','lipa','malipo','mpesa','airtel','namba'], failed:['haikufika','haijafika','tatizo','fault'], refund:['refund','rudisha','pesa'], recommend:['recommend','nipendekeze','nibadilishe','gani'] };
+    var bestKey = null, bestScore = 0;
+    Object.keys(keywords).forEach(function(key){
+        var score = keywords[key].filter(function(kw){ return lower.includes(kw); }).length;
+        if (score > bestScore) { bestScore=score; bestKey=key; }
+    });
+    if (bestKey) {
+        setTimeout(function(){ addBotMsg(FAQ[bestKey].a); }, 300);
+    } else if (lower.includes('wasiliana') || lower.includes('whatsapp')) {
+        window.open('https://wa.me/255612626715?text=Habari%2C%20ninahitaji%20msaada','_blank');
+        setTimeout(function(){ addBotMsg('Nimekufungulia WhatsApp! Tutakusaidia haraka 📲'); }, 300);
+    } else {
+        setTimeout(function(){ addBotMsg('Samahani, sijapata jibu sahihi. 🙏 Wasiliana nasi WhatsApp: 255612626715 — tutakusaidia moja kwa moja!'); }, 300);
+    }
+}
+
+// ===== FLOATING WA =====
 function toggleWA() {
-    let menu = document.getElementById("waOptions");
-    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    var m = document.getElementById('waOptions');
+    m.style.display = m.style.display==='block' ? 'none' : 'block';
 }
-</script>
-<script>
-function getRandomStock(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+document.addEventListener('click', function(e){
+    var w=document.querySelector('.wa-wrapper'), m=document.getElementById('waOptions');
+    if (m.style.display==='block' && w && !w.contains(e.target)) m.style.display='none';
+});
 
-let tigoStock = getRandomStock(4, 12);
-let halotelStock = getRandomStock(2, 5);
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Calculators — zionyeshe bei mara moja
+    calcTigo(1);
+    calcHalo(3);
 
-document.getElementById("tigoStock").innerText = tigoStock;
-document.getElementById("halotelStock").innerText = halotelStock;
+    // 2. Stock counters
+    showStock();
+    setInterval(function(){ if(tigoStock>1)tigoStock--; else tigoStock=randStock(4,12); showStock(); }, randStock(30000,90000));
+    setInterval(function(){ if(haloStock>1)haloStock--; else haloStock=randStock(2,5); showStock(); }, randStock(40000,120000));
 
-setInterval(() => {
-    if (tigoStock > 0) {
-        tigoStock--;
-        document.getElementById("tigoStock").innerText = tigoStock;
-    }
-}, Math.random() * 60000 + 30000);
+    // 3. Flash Sale (defaults kwanza, Firestore inabadilisha baadaye)
+    initSale();
 
-setInterval(() => {
-    if (halotelStock > 0) {
-        halotelStock--;
-        document.getElementById("halotelStock").innerText = halotelStock;
-    }
-}, Math.random() * 80000 + 40000);
+    // 4. Live config kutoka Firestore (Admin Dashboard)
+    loadLiveConfig();
+});
 </script>
 </body>
 </html>

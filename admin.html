@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Bundles — Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #2563EB; --green: #00C896; --orange: #FF6B35;
+            --red: #E11D48; --bg: #F1F5F9; --card: #FFFFFF;
+            --text: #1A1F36; --light: #6B7280; --border: #E2E8F0;
+            --radius: 14px; --shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+        /* LOGIN */
+        #loginScreen {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 20px;
+            background: linear-gradient(135deg, #1A1F36 0%, #2563EB 100%);
+        }
+        .login-box {
+            background: white; border-radius: 24px; padding: 40px 32px;
+            width: 100%; max-width: 380px; text-align: center;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+        }
+        .login-logo { font-size: 48px; margin-bottom: 8px; }
+        .login-box h2 { font-family: 'Poppins',sans-serif; font-size: 22px; margin-bottom: 4px; }
+        .login-box p { color: var(--light); font-size: 13px; margin-bottom: 28px; }
+        .login-box input {
+            width: 100%; padding: 14px 16px; border-radius: 12px;
+            border: 2px solid var(--border); font-size: 15px;
+            outline: none; margin-bottom: 14px; text-align: center;
+            letter-spacing: 3px; transition: border-color 0.2s;
+        }
+        .login-box input:focus { border-color: var(--blue); }
+        .login-btn {
+            width: 100%; padding: 14px; background: linear-gradient(90deg, var(--blue), var(--green));
+            color: white; border: none; border-radius: 12px; font-size: 15px;
+            font-weight: 700; cursor: pointer; transition: filter 0.2s;
+        }
+        .login-btn:hover { filter: brightness(1.07); }
+        .login-error { color: var(--red); font-size: 13px; margin-top: 10px; display: none; }
+
+        /* MAIN LAYOUT */
+        #dashboard { display: none; }
+        .top-bar {
+            background: linear-gradient(90deg, #1A1F36, var(--blue));
+            color: white; padding: 14px 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        }
+        .top-bar-left { display: flex; align-items: center; gap: 10px; }
+        .top-bar-left span { font-family: 'Poppins',sans-serif; font-weight: 700; font-size: 18px; }
+        .top-bar-right { display: flex; align-items: center; gap: 12px; }
+        .logout-btn {
+            background: rgba(255,255,255,0.15); color: white; border: none;
+            padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover { background: rgba(255,255,255,0.25); }
+        .save-status { font-size: 13px; opacity: 0.85; }
+
+        /* NAV TABS */
+        .nav-tabs {
+            display: flex; gap: 4px; padding: 16px 20px 0;
+            overflow-x: auto; background: white;
+            border-bottom: 2px solid var(--border);
+        }
+        .tab-btn {
+            padding: 10px 18px; border: none; background: none; border-radius: 10px 10px 0 0;
+            font-size: 14px; font-weight: 600; color: var(--light); cursor: pointer;
+            white-space: nowrap; transition: all 0.2s;
+            border-bottom: 3px solid transparent; margin-bottom: -2px;
+        }
+        .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: var(--bg); }
+        .tab-btn:hover:not(.active) { background: var(--bg); color: var(--text); }
+
+        /* CONTENT */
+        .tab-content { display: none; padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+        .tab-content.active { display: block; }
+
+        /* CARDS */
+        .panel {
+            background: var(--card); border-radius: var(--radius);
+            box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden;
+        }
+        .panel-header {
+            padding: 16px 20px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .panel-header h3 { font-family: 'Poppins',sans-serif; font-size: 16px; }
+        .panel-body { padding: 20px; }
+
+        /* FLASH SALE TOGGLE */
+        .toggle-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .toggle-label { font-weight: 600; font-size: 15px; }
+        .toggle-switch {
+            position: relative; width: 52px; height: 28px;
+            background: #CBD5E1; border-radius: 14px; cursor: pointer;
+            transition: background 0.2s; border: none; padding: 0;
+        }
+        .toggle-switch.on { background: var(--green); }
+        .toggle-switch::after {
+            content: ''; position: absolute; width: 22px; height: 22px;
+            background: white; border-radius: 50%; top: 3px; left: 3px;
+            transition: transform 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        .toggle-switch.on::after { transform: translateX(24px); }
+
+        /* FORM FIELDS */
+        .field-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 12px; flex-wrap: wrap; }
+        .field-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 120px; }
+        .field-group label { font-size: 12px; font-weight: 600; color: var(--light); text-transform: uppercase; letter-spacing: 0.5px; }
+        .field-group input, .field-group textarea, .field-group select {
+            padding: 10px 12px; border-radius: 10px; border: 2px solid var(--border);
+            font-size: 14px; outline: none; font-family: inherit;
+            transition: border-color 0.2s; width: 100%;
+        }
+        .field-group input:focus, .field-group textarea:focus { border-color: var(--blue); }
+        .field-group textarea { height: 90px; resize: vertical; }
+
+        /* BUTTONS */
+        .btn { padding: 10px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; transition: filter 0.15s, transform 0.1s; }
+        .btn:hover { filter: brightness(1.07); transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
+        .btn-primary { background: var(--blue); color: white; }
+        .btn-green { background: var(--green); color: white; }
+        .btn-orange { background: var(--orange); color: white; }
+        .btn-red { background: #FEE2E2; color: var(--red); }
+        .btn-red:hover { background: var(--red); color: white; }
+        .btn-sm { padding: 7px 12px; font-size: 12px; }
+        .btn-full { width: 100%; padding: 13px; font-size: 15px; margin-top: 8px; }
+
+        /* PRICE TABLE */
+        .price-table { width: 100%; border-collapse: collapse; }
+        .price-table th { font-size: 11px; color: var(--light); text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+        .price-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
+        .price-table tr:last-child td { border-bottom: none; }
+        .price-table tr:hover td { background: #F8FAFF; }
+        .price-input { width: 100%; padding: 7px 10px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; }
+        .price-input:focus { border-color: var(--blue); }
+        .price-input.changed { border-color: var(--orange); background: #FFF8F0; }
+
+        /* FAQ TABLE */
+        .faq-item { background: #F8FAFF; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid var(--border); }
+        .faq-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .faq-key { font-size: 11px; font-weight: 700; color: var(--blue); background: #EEF4FF; padding: 3px 8px; border-radius: 50px; }
+        .faq-actions { display: flex; gap: 6px; }
+        .faq-question { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        .faq-answer { font-size: 13px; color: var(--light); line-height: 1.5; white-space: pre-wrap; }
+
+        /* REVIEWS TABLE */
+        .review-item { background: #F8FAFF; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; }
+        .review-item-body { flex: 1; }
+        .review-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+        .review-name { font-weight: 700; font-size: 14px; }
+        .review-stars { color: #FFD166; font-size: 13px; }
+        .review-msg { font-size: 13px; color: var(--light); }
+        .review-date { font-size: 11px; color: #9CA3AF; margin-top: 4px; }
+
+        /* STATS BAR */
+        .stats-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .stat-card { background: var(--card); border-radius: var(--radius); padding: 16px 20px; flex: 1; min-width: 120px; box-shadow: var(--shadow); text-align: center; }
+        .stat-card .stat-num { font-family: 'Poppins',sans-serif; font-size: 28px; font-weight: 800; }
+        .stat-card .stat-label { font-size: 12px; color: var(--light); margin-top: 2px; }
+
+        /* BADGE */
+        .badge-new { background: var(--green); color: white; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 50px; }
+        .badge-sale { background: var(--orange); color: white; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 50px; }
+
+        /* ALERT */
+        .alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; display: none; }
+        .alert.success { background: #E7FBF2; color: #0F766E; border: 1px solid #A7F3D0; }
+        .alert.error { background: #FEE2E2; color: var(--red); border: 1px solid #FCA5A5; }
+        .alert.visible { display: block; }
+
+        /* LOADING */
+        .loading-spinner { text-align: center; padding: 40px; color: var(--light); }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .top-bar { padding: 12px 16px; }
+            .tab-content { padding: 16px 12px; }
+            .panel-body { padding: 14px; }
+            .stats-row { gap: 8px; }
+            .stat-card { padding: 12px; }
+            .stat-card .stat-num { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+    <div class="login-box">
+        <div class="login-logo">🛡️</div>
+        <h2>Smart Bundles Admin</h2>
+        <p>Ingiza password yako ya admin</p>
+        <input type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="login-btn" onclick="doLogin()">Ingia Dashboard</button>
+        <div class="login-error" id="loginError">❌ Password si sahihi. Jaribu tena.</div>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <span>🛡️ Smart Bundles Admin</span>
+        </div>
+        <div class="top-bar-right">
+            <span class="save-status" id="saveStatus"></span>
+            <button class="logout-btn" onclick="doLogout()">Toka →</button>
+        </div>
+    </div>
+
+    <!-- NAV TABS -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('overview')">📊 Muhtasari</button>
+        <button class="tab-btn" onclick="switchTab('tigo')">📡 Bei Tigo</button>
+        <button class="tab-btn" onclick="switchTab('halotel')">📶 Bei Halotel</button>
+        <button class="tab-btn" onclick="switchTab('sale')">⚡ Flash Sale</button>
+        <button class="tab-btn" onclick="switchTab('chatbot')">🤖 Chatbot FAQ</button>
+        <button class="tab-btn" onclick="switchTab('reviews')">💬 Maoni</button>
+    </div>
+
+    <!-- TAB: OVERVIEW -->
+    <div class="tab-content active" id="tab-overview">
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-num" style="color:var(--blue)" id="statTigo">—</div><div class="stat-label">Bei za Tigo</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:var(--green)" id="statHalo">—</div><div class="stat-label">Bei za Halotel</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:var(--orange)" id="statSale">—</div><div class="stat-label">Flash Sale</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:var(--text)" id="statReviews">—</div><div class="stat-label">Maoni</div></div>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><h3>⚡ Hali ya Flash Sale</h3></div>
+            <div class="panel-body" id="overviewSale">Inapakia...</div>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><h3>📋 Hatua za Haraka</h3></div>
+            <div class="panel-body">
+                <p style="font-size:14px;color:var(--light);line-height:1.8">
+                    ✅ Badilisha bei → Tab ya <strong>Bei Tigo</strong> au <strong>Bei Halotel</strong><br>
+                    ✅ Washa/zima sale → Tab ya <strong>Flash Sale</strong><br>
+                    ✅ Ongeza maswali ya bot → Tab ya <strong>Chatbot FAQ</strong><br>
+                    ✅ Futa maoni mabaya → Tab ya <strong>Maoni</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: TIGO PRICES -->
+    <div class="tab-content" id="tab-tigo">
+        <div class="alert" id="tigoAlert"></div>
+        <div class="panel">
+            <div class="panel-header">
+                <h3>📡 Bei za Tigo</h3>
+                <button class="btn btn-primary btn-sm" onclick="saveTigoPrices()">💾 Hifadhi Mabadiliko</button>
+            </div>
+            <div class="panel-body">
+                <p style="font-size:13px;color:var(--light);margin-bottom:14px">Badilisha bei moja kwa moja — bonyeza "Hifadhi" mabadiliko yaende website mara moja.</p>
+                <table class="price-table" id="tigoTable">
+                    <thead><tr><th>Bando</th><th>Bei (TZS)</th><th>TZS/GB</th><th>Kitendo</th></tr></thead>
+                    <tbody id="tigoTableBody"><tr><td colspan="4" class="loading-spinner">⏳ Inapakia...</td></tr></tbody>
+                </table>
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+                    <h4 style="font-size:14px;margin-bottom:10px">➕ Ongeza Package Mpya</h4>
+                    <div class="field-row">
+                        <div class="field-group"><label>GB</label><input type="number" id="newTigoGb" placeholder="mfano: 25"></div>
+                        <div class="field-group"><label>Bei (TZS)</label><input type="number" id="newTigoPrice" placeholder="mfano: 44000"></div>
+                        <button class="btn btn-green" onclick="addTigoPackage()">+ Ongeza</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: HALOTEL PRICES -->
+    <div class="tab-content" id="tab-halotel">
+        <div class="alert" id="haloAlert"></div>
+        <div class="panel">
+            <div class="panel-header">
+                <h3>📶 Bei za Halotel</h3>
+                <button class="btn btn-green btn-sm" onclick="saveHaloPrices()">💾 Hifadhi Mabadiliko</button>
+            </div>
+            <div class="panel-body">
+                <p style="font-size:13px;color:var(--light);margin-bottom:14px">Badilisha bei moja kwa moja — bonyeza "Hifadhi" mabadiliko yaende website mara moja.</p>
+                <table class="price-table" id="haloTable">
+                    <thead><tr><th>Bando</th><th>Bei (TZS)</th><th>TZS/GB</th><th>Kitendo</th></tr></thead>
+                    <tbody id="haloTableBody"><tr><td colspan="4" class="loading-spinner">⏳ Inapakia...</td></tr></tbody>
+                </table>
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+                    <h4 style="font-size:14px;margin-bottom:10px">➕ Ongeza Package Mpya</h4>
+                    <div class="field-row">
+                        <div class="field-group"><label>GB</label><input type="number" id="newHaloGb" placeholder="mfano: 45"></div>
+                        <div class="field-group"><label>Bei (TZS)</label><input type="number" id="newHaloPrice" placeholder="mfano: 42000"></div>
+                        <button class="btn btn-green" onclick="addHaloPackage()">+ Ongeza</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: FLASH SALE -->
+    <div class="tab-content" id="tab-sale">
+        <div class="alert" id="saleAlert"></div>
+        <div class="panel">
+            <div class="panel-header"><h3>⚡ Mipangilio ya Flash Sale</h3></div>
+            <div class="panel-body">
+                <div class="toggle-row">
+                    <span class="toggle-label">Flash Sale:</span>
+                    <button class="toggle-switch" id="saleToggle" onclick="toggleSale()"></button>
+                    <span id="saleToggleLabel" style="font-size:14px;color:var(--light)">Imezimwa</span>
+                </div>
+                <div class="field-row">
+                    <div class="field-group" style="flex:2">
+                        <label>Kichwa (Title)</label>
+                        <input type="text" id="saleTitle" placeholder="mfano: 🔥 Flash Sale ya Leo!">
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-group" style="flex:2">
+                        <label>Maelezo Mafupi</label>
+                        <input type="text" id="saleSubtitle" placeholder="mfano: Bei zimepunguzwa kwa muda mfupi!">
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>Inaisha Tarehe</label>
+                        <input type="datetime-local" id="saleEndsAt">
+                    </div>
+                    <div class="field-group">
+                        <label>Masaa ya Ziada (kutoka sasa)</label>
+                        <select id="saleQuickTime" onchange="setQuickTime(this.value)">
+                            <option value="">— Chagua haraka —</option>
+                            <option value="2">Masaa 2</option>
+                            <option value="4">Masaa 4</option>
+                            <option value="6">Masaa 6</option>
+                            <option value="12">Masaa 12</option>
+                            <option value="24">Saa 24 (siku 1)</option>
+                            <option value="48">Saa 48 (siku 2)</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-orange btn-full" onclick="saveSaleConfig()">💾 Hifadhi Mipangilio ya Sale</button>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <h3>🏷️ Bei za Sale (Tigo)</h3>
+                <button class="btn btn-orange btn-sm" onclick="saveSalePrices()">💾 Hifadhi Bei</button>
+            </div>
+            <div class="panel-body">
+                <table class="price-table" id="salePriceTable">
+                    <thead><tr><th>Bando</th><th>Bei ya Kawaida</th><th>Bei ya Sale</th><th>Punguzo</th><th>Kitendo</th></tr></thead>
+                    <tbody id="salePriceBody"><tr><td colspan="5" class="loading-spinner">⏳ Inapakia...</td></tr></tbody>
+                </table>
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+                    <h4 style="font-size:14px;margin-bottom:10px">➕ Ongeza Bei ya Sale</h4>
+                    <div class="field-row">
+                        <div class="field-group"><label>Bando</label><input type="text" id="newSaleGb" placeholder="mfano: 25GB"></div>
+                        <div class="field-group"><label>Bei Kawaida</label><input type="number" id="newSaleOrig" placeholder="44000"></div>
+                        <div class="field-group"><label>Bei Sale</label><input type="number" id="newSaleSale" placeholder="40000"></div>
+                        <button class="btn btn-orange" onclick="addSalePrice()">+ Ongeza</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: CHATBOT FAQ -->
+    <div class="tab-content" id="tab-chatbot">
+        <div class="alert" id="faqAlert"></div>
+        <div class="panel">
+            <div class="panel-header"><h3>🤖 Maswali ya Chatbot</h3></div>
+            <div class="panel-body">
+                <div id="faqList"><div class="loading-spinner">⏳ Inapakia...</div></div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><h3>➕ Ongeza Swali Jipya</h3></div>
+            <div class="panel-body">
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>Key (ID ya swali — herufi ndogo, hakuna nafasi)</label>
+                        <input type="text" id="newFaqKey" placeholder="mfano: expire">
+                    </div>
+                    <div class="field-group" style="flex:2">
+                        <label>Kichwa cha Swali (linaonekana kwenye buttons)</label>
+                        <input type="text" id="newFaqQuestion" placeholder="mfano: 📅 Bando zinaisha lini?">
+                    </div>
+                </div>
+                <div class="field-group" style="margin-bottom:12px">
+                    <label>Jibu (unaweza kutumia emoji na line breaks)</label>
+                    <textarea id="newFaqAnswer" placeholder="mfano: Bando za Tigo zinaisha miezi 2, Halotel miezi 3-6..."></textarea>
+                </div>
+                <div class="field-group" style="margin-bottom:14px">
+                    <label>Keywords (zitenga kwa koma — zinatumika kupata swali)</label>
+                    <input type="text" id="newFaqKeywords" placeholder="mfano: isha,expire,muda,tarehe,miezi">
+                </div>
+                <button class="btn btn-primary btn-full" onclick="addFaq()">➕ Ongeza Swali</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: REVIEWS -->
+    <div class="tab-content" id="tab-reviews">
+        <div class="alert" id="reviewsAlert"></div>
+        <div class="panel">
+            <div class="panel-header">
+                <h3>💬 Maoni ya Wateja (<span id="reviewCount">0</span>)</h3>
+                <button class="btn btn-sm" style="background:#F1F5F9" onclick="loadReviews()">🔄 Onyesha upya</button>
+            </div>
+            <div class="panel-body" id="reviewsList">
+                <div class="loading-spinner">⏳ Inapakia...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ===== CONFIG =====
+var ADMIN_PASSWORD = "smart2025"; // ← Badilisha hii!
+
+// ===== FIREBASE =====
+firebase.initializeApp({
+    apiKey: "AIzaSyCVp3VUQVJzVVW_vFgeEcSk0PD57tsP1dg",
+    authDomain: "smart-bundles-10d09.firebaseapp.com",
+    projectId: "smart-bundles-10d09",
+    storageBucket: "smart-bundles-10d09.firebasestorage.app",
+    messagingSenderId: "146024000699",
+    appId: "1:146024000699:web:4fc1877970d09d3867cd9e"
+});
+var db = firebase.firestore();
+
+// ===== DEFAULT DATA (website inasoma hii kama Firestore haina) =====
+var DEFAULT_TIGO = {1:1800,2:3800,3:5500,4:7200,5:9000,6:10700,7:12500,8:14000,9:15800,10:18000,15:26000,20:35000};
+var DEFAULT_HALO = {3:3500,4:4500,5:5500,6:6500,7:7500,8:8500,9:9000,10:10000,11:11000,12:12000,13:13000,14:14000,15:15000,16:16000,17:17000,18:18000,19:18500,20:19000,25:24000,30:28000,35:33000,40:37000};
+var DEFAULT_SALE = {
+    active: true, title: "🔥 Flash Sale ya Leo!", subtitle: "Bei zimepunguzwa kwa muda mfupi tu!",
+    endsAt: "2025-06-20T18:00:00",
+    tigoPrices: {"25GB":{original:44000,sale:40000},"30GB":{original:52000,sale:47000},"40GB":{original:68000,sale:62000},"50GB":{original:85000,sale:78000},"60GB":{original:100000,sale:92000},"75GB":{original:122000,sale:112000},"100GB":{original:105000,sale:97000}}
+};
+var DEFAULT_FAQ = {
+    trust:     { question:"🤔 Kwanini niwaamini?",       answer:"Tumehudumia wateja wengi! ✅ Tunatuma bando ndani ya dakika 1-5, na kama tatizo lolote — tunarudisha pesa au kutuma upya. WhatsApp yetu iko wazi 24/7. Jaribu na GB ndogo kwanza utajionea! 💪", keywords:"amini,trust,uhakika,salama" },
+    speed:     { question:"🚀 Speed ya Halotel",          answer:"Jinsi ya kuongeza speed ya Halotel: 📶\n\n1️⃣ Settings → Mobile Network → Network Mode → chagua 4G/LTE Only\n2️⃣ Weka APN: internet\n3️⃣ Reboot simu yako\n4️⃣ Jaribu mahali palio wazi (nje ya nyumba)", keywords:"speed,haraka,polepole,mbio,slow" },
+    area:      { question:"📍 Mtandao unasumbua eneo langu", answer:"Tatizo la mtandao linategemea eneo lako 📍\n\n🔵 Tigo — nzuri mijini\n🟡 Halotel — bora vijijini na maeneo ya mbali\n\nNiambie uko wapi nikupe ushauri bora!", keywords:"eneo,sehemu,coverage,signal,mbali" },
+    howlong:   { question:"⏱ Muda wa kupata bando",       answer:"Tunatuma bando ndani ya dakika 1-5 tu! ⚡\n\nHakikisha unatuma screenshot ya malipo WhatsApp. Umepita dakika 10? Wasiliana nasi mara moja!", keywords:"muda,lini,dakika,subiri,haraka" },
+    compare:   { question:"⚖️ Tigo vs Halotel",            answer:"🔵 TIGO: Nzuri mijini, Miezi 2, 1-20GB\n🟡 HALOTEL: Bei nafuu zaidi, Miezi 3-6, 3-40GB+\n\n💡 Data nyingi → Halotel. Speed mijini → Tigo!", keywords:"tigo,halotel,bora,tofauti,compare,ipi" },
+    payment:   { question:"💳 Jinsi ya kulipia",            answer:"Tunapokea: 💳\n\n📲 M-Pesa → 136077210 (HANSI LUCAS)\n📲 Airtel Money → 136077210\n📲 Mixx by Yas → 136077210\n\nBaada ya kulipa, tuma screenshot WhatsApp!", keywords:"lipia,lipa,malipo,mpesa,airtel,namba" },
+    failed:    { question:"❌ Bando haikufika",             answer:"Pole sana! ❌ Hatua:\n\n1. Subiri dakika 10\n2. Angalia namba uliyotupa\n3. Washa/zima simu\n4. Wasiliana nasi → 255612626715 na screenshot\n\n🔒 Tutasuluhisha au kurudisha pesa!", keywords:"haikufika,haijafika,tatizo,fault" },
+    refund:    { question:"💰 Napata refund?",              answer:"Ndiyo — tunalipa refund! 💰\n\nMasharti:\n• Bando halikufika ndani ya saa 1\n• Malipo yamethibitishwa\n\nTuma WhatsApp: 'Nataka refund — [namba] — [kiasi]'", keywords:"refund,rudisha,pesa" },
+    recommend: { question:"💡 Nibadilishe bando gani?",    answer:"Kulingana na matumizi: 💡\n\n📱 WhatsApp/FB → Halotel 5-10GB\n🎬 YouTube → Halotel 20-30GB\n💼 Zoom/Kazi → 15GB Tigo au Halotel\n🏠 Familia → Halotel 35-40GB", keywords:"recommend,nipendekeze,nibadilishe,gani" }
+};
+
+// ===== STATE =====
+var state = { tigo:{}, halo:{}, sale:{}, faq:{} };
+
+// ===== LOGIN =====
+function doLogin() {
+    var pw = document.getElementById('pwInput').value;
+    if (pw === ADMIN_PASSWORD) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        loadAll();
+    } else {
+        var err = document.getElementById('loginError');
+        err.style.display = 'block';
+        setTimeout(function(){ err.style.display='none'; }, 3000);
+    }
+}
+document.getElementById('pwInput').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+
+function doLogout() {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('pwInput').value = '';
+}
+
+// ===== TABS =====
+function switchTab(name) {
+    document.querySelectorAll('.tab-btn').forEach(function(b,i){
+        b.classList.toggle('active', b.innerText.toLowerCase().includes(name) ||
+            (name==='overview'&&i===0)||(name==='tigo'&&i===1)||(name==='halotel'&&i===2)||
+            (name==='sale'&&i===3)||(name==='chatbot'&&i===4)||(name==='reviews'&&i===5));
+    });
+    document.querySelectorAll('.tab-content').forEach(function(t){ t.classList.remove('active'); });
+    document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ===== LOAD ALL =====
+function loadAll() {
+    loadTigoPrices();
+    loadHaloPrices();
+    loadSaleConfig();
+    loadFaq();
+    loadReviews();
+}
+
+// ===== STATUS HELPERS =====
+function showAlert(id, msg, type) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.className = 'alert ' + type + ' visible';
+    el.innerText = msg;
+    setTimeout(function(){ el.classList.remove('visible'); }, 3500);
+}
+function setSaveStatus(msg) {
+    var el = document.getElementById('saveStatus');
+    el.innerText = msg;
+    setTimeout(function(){ el.innerText=''; }, 3000);
+}
+
+// ===== TIGO PRICES =====
+function loadTigoPrices() {
+    db.collection('config').doc('tigo_prices').get().then(function(doc) {
+        state.tigo = doc.exists ? doc.data() : DEFAULT_TIGO;
+        renderTigoTable();
+        document.getElementById('statTigo').innerText = Object.keys(state.tigo).length;
+    }).catch(function(){ state.tigo = DEFAULT_TIGO; renderTigoTable(); });
+}
+
+function renderTigoTable() {
+    var keys = Object.keys(state.tigo).map(Number).sort(function(a,b){return a-b;});
+    var tbody = document.getElementById('tigoTableBody');
+    tbody.innerHTML = '';
+    keys.forEach(function(gb) {
+        var price = state.tigo[gb];
+        var ppg = Math.round(price/gb);
+        tbody.innerHTML += '<tr>' +
+            '<td><strong>'+gb+'GB</strong></td>' +
+            '<td><input class="price-input" data-gb="'+gb+'" data-net="tigo" value="'+price+'" oninput="markChanged(this)"> TZS</td>' +
+            '<td style="color:var(--light)">'+ppg.toLocaleString()+' TZS/GB</td>' +
+            '<td><button class="btn btn-red btn-sm" onclick="deletePackage(\'tigo\','+gb+')">🗑</button></td>' +
+            '</tr>';
+    });
+}
+
+function saveTigoPrices() {
+    var inputs = document.querySelectorAll('.price-input[data-net="tigo"]');
+    var data = {};
+    inputs.forEach(function(inp){ data[inp.dataset.gb] = parseInt(inp.value)||0; });
+    state.tigo = data;
+    db.collection('config').doc('tigo_prices').set(data).then(function(){
+        showAlert('tigoAlert','✅ Bei za Tigo zimehifadhiwa!','success');
+        setSaveStatus('✅ Imehifadhiwa');
+        renderTigoTable();
+    }).catch(function(e){ showAlert('tigoAlert','❌ Hitilafu: '+e.message,'error'); });
+}
+
+function addTigoPackage() {
+    var gb = parseInt(document.getElementById('newTigoGb').value);
+    var price = parseInt(document.getElementById('newTigoPrice').value);
+    if (!gb||!price){ alert('Weka GB na Bei'); return; }
+    state.tigo[gb] = price;
+    document.getElementById('newTigoGb').value='';
+    document.getElementById('newTigoPrice').value='';
+    db.collection('config').doc('tigo_prices').set(state.tigo).then(function(){
+        showAlert('tigoAlert','✅ Package '+gb+'GB imeongezwa!','success');
+        renderTigoTable();
+    }).catch(function(e){ showAlert('tigoAlert','❌ '+e.message,'error'); });
+}
+
+// ===== HALOTEL PRICES =====
+function loadHaloPrices() {
+    db.collection('config').doc('halo_prices').get().then(function(doc) {
+        state.halo = doc.exists ? doc.data() : DEFAULT_HALO;
+        renderHaloTable();
+        document.getElementById('statHalo').innerText = Object.keys(state.halo).length;
+    }).catch(function(){ state.halo = DEFAULT_HALO; renderHaloTable(); });
+}
+
+function renderHaloTable() {
+    var keys = Object.keys(state.halo).map(Number).sort(function(a,b){return a-b;});
+    var tbody = document.getElementById('haloTableBody');
+    tbody.innerHTML = '';
+    keys.forEach(function(gb) {
+        var price = state.halo[gb];
+        var ppg = Math.round(price/gb);
+        tbody.innerHTML += '<tr>' +
+            '<td><strong>'+gb+'GB</strong></td>' +
+            '<td><input class="price-input" data-gb="'+gb+'" data-net="halo" value="'+price+'" oninput="markChanged(this)"> TZS</td>' +
+            '<td style="color:var(--light)">'+ppg.toLocaleString()+' TZS/GB</td>' +
+            '<td><button class="btn btn-red btn-sm" onclick="deletePackage(\'halo\','+gb+')">🗑</button></td>' +
+            '</tr>';
+    });
+}
+
+function saveHaloPrices() {
+    var inputs = document.querySelectorAll('.price-input[data-net="halo"]');
+    var data = {};
+    inputs.forEach(function(inp){ data[inp.dataset.gb] = parseInt(inp.value)||0; });
+    state.halo = data;
+    db.collection('config').doc('halo_prices').set(data).then(function(){
+        showAlert('haloAlert','✅ Bei za Halotel zimehifadhiwa!','success');
+        setSaveStatus('✅ Imehifadhiwa');
+        renderHaloTable();
+    }).catch(function(e){ showAlert('haloAlert','❌ Hitilafu: '+e.message,'error'); });
+}
+
+function addHaloPackage() {
+    var gb = parseInt(document.getElementById('newHaloGb').value);
+    var price = parseInt(document.getElementById('newHaloPrice').value);
+    if (!gb||!price){ alert('Weka GB na Bei'); return; }
+    state.halo[gb] = price;
+    document.getElementById('newHaloGb').value='';
+    document.getElementById('newHaloPrice').value='';
+    db.collection('config').doc('halo_prices').set(state.halo).then(function(){
+        showAlert('haloAlert','✅ Package '+gb+'GB imeongezwa!','success');
+        renderHaloTable();
+    }).catch(function(e){ showAlert('haloAlert','❌ '+e.message,'error'); });
+}
+
+function deletePackage(net, gb) {
+    if (!confirm('Futa '+gb+'GB?')) return;
+    delete state[net][gb];
+    var docName = net==='tigo' ? 'tigo_prices' : 'halo_prices';
+    db.collection('config').doc(docName).set(state[net]).then(function(){
+        if(net==='tigo') renderTigoTable(); else renderHaloTable();
+        setSaveStatus('✅ Imefutwa');
+    });
+}
+
+function markChanged(inp) { inp.classList.add('changed'); }
+
+// ===== FLASH SALE =====
+function loadSaleConfig() {
+    db.collection('config').doc('flash_sale').get().then(function(doc) {
+        state.sale = doc.exists ? doc.data() : DEFAULT_SALE;
+        renderSaleConfig();
+        renderSalePrices();
+        document.getElementById('statSale').innerText = state.sale.active ? '🟢 ON' : '⭕ OFF';
+    }).catch(function(){ state.sale = DEFAULT_SALE; renderSaleConfig(); renderSalePrices(); });
+}
+
+function renderSaleConfig() {
+    var s = state.sale;
+    var tog = document.getElementById('saleToggle');
+    var lbl = document.getElementById('saleToggleLabel');
+    tog.className = 'toggle-switch' + (s.active ? ' on' : '');
+    lbl.innerText = s.active ? '🟢 Imewashwa' : '⭕ Imezimwa';
+    document.getElementById('saleTitle').value = s.title || '';
+    document.getElementById('saleSubtitle').value = s.subtitle || '';
+    if (s.endsAt) document.getElementById('saleEndsAt').value = s.endsAt.substring(0,16);
+    // Overview
+    var ov = document.getElementById('overviewSale');
+    if (ov) ov.innerHTML = s.active
+        ? '<p style="color:var(--green);font-weight:700">🟢 Flash Sale iko ON — inaisha: '+s.endsAt+'</p>'
+        : '<p style="color:var(--light)">⭕ Flash Sale imezimwa sasa hivi.</p>';
+}
+
+function renderSalePrices() {
+    var prices = state.sale.tigoPrices || {};
+    var tbody = document.getElementById('salePriceBody');
+    tbody.innerHTML = '';
+    Object.keys(prices).forEach(function(gb) {
+        var p = prices[gb];
+        var pct = Math.round((p.original-p.sale)/p.original*100);
+        tbody.innerHTML += '<tr>' +
+            '<td><strong>'+gb+'</strong></td>' +
+            '<td><input class="price-input" data-salegb="'+gb+'" data-type="original" value="'+p.original+'" oninput="markChanged(this)"> TZS</td>' +
+            '<td><input class="price-input" data-salegb="'+gb+'" data-type="sale" value="'+p.sale+'" oninput="markChanged(this)"> TZS</td>' +
+            '<td style="color:var(--red);font-weight:700">-'+pct+'%</td>' +
+            '<td><button class="btn btn-red btn-sm" onclick="deleteSalePrice(\''+gb+'\')">🗑</button></td></tr>';
+    });
+}
+
+function toggleSale() {
+    state.sale.active = !state.sale.active;
+    renderSaleConfig();
+}
+
+function setQuickTime(hours) {
+    if (!hours) return;
+    var d = new Date(); d.setHours(d.getHours()+parseInt(hours));
+    var local = new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().substring(0,16);
+    document.getElementById('saleEndsAt').value = local;
+    document.getElementById('saleQuickTime').value = '';
+}
+
+function saveSaleConfig() {
+    state.sale.title = document.getElementById('saleTitle').value;
+    state.sale.subtitle = document.getElementById('saleSubtitle').value;
+    state.sale.endsAt = document.getElementById('saleEndsAt').value;
+    db.collection('config').doc('flash_sale').set(state.sale).then(function(){
+        showAlert('saleAlert','✅ Mipangilio ya Sale imehifadhiwa!','success');
+        setSaveStatus('✅ Imehifadhiwa');
+        renderSaleConfig();
+        document.getElementById('statSale').innerText = state.sale.active ? '🟢 ON' : '⭕ OFF';
+    }).catch(function(e){ showAlert('saleAlert','❌ '+e.message,'error'); });
+}
+
+function saveSalePrices() {
+    var inputs = document.querySelectorAll('[data-salegb]');
+    var prices = {};
+    inputs.forEach(function(inp){
+        var gb = inp.dataset.salegb, type = inp.dataset.type;
+        if (!prices[gb]) prices[gb] = {};
+        prices[gb][type] = parseInt(inp.value)||0;
+    });
+    state.sale.tigoPrices = prices;
+    db.collection('config').doc('flash_sale').set(state.sale).then(function(){
+        showAlert('saleAlert','✅ Bei za Sale zimehifadhiwa!','success');
+        renderSalePrices();
+    }).catch(function(e){ showAlert('saleAlert','❌ '+e.message,'error'); });
+}
+
+function addSalePrice() {
+    var gb=document.getElementById('newSaleGb').value.trim();
+    var orig=parseInt(document.getElementById('newSaleOrig').value);
+    var sale=parseInt(document.getElementById('newSaleSale').value);
+    if(!gb||!orig||!sale){ alert('Jaza fields zote'); return; }
+    if (!state.sale.tigoPrices) state.sale.tigoPrices={};
+    state.sale.tigoPrices[gb]={original:orig,sale:sale};
+    document.getElementById('newSaleGb').value='';
+    document.getElementById('newSaleOrig').value='';
+    document.getElementById('newSaleSale').value='';
+    db.collection('config').doc('flash_sale').set(state.sale).then(function(){
+        showAlert('saleAlert','✅ Bei ya Sale imeongezwa!','success');
+        renderSalePrices();
+    }).catch(function(e){ showAlert('saleAlert','❌ '+e.message,'error'); });
+}
+
+function deleteSalePrice(gb) {
+    if (!confirm('Futa '+gb+' kutoka Sale?')) return;
+    delete state.sale.tigoPrices[gb];
+    db.collection('config').doc('flash_sale').set(state.sale).then(function(){
+        renderSalePrices(); setSaveStatus('✅ Imefutwa');
+    });
+}
+
+// ===== CHATBOT FAQ =====
+function loadFaq() {
+    db.collection('config').doc('chatbot_faq').get().then(function(doc) {
+        state.faq = doc.exists ? doc.data() : DEFAULT_FAQ;
+        renderFaqList();
+    }).catch(function(){ state.faq = DEFAULT_FAQ; renderFaqList(); });
+}
+
+function renderFaqList() {
+    var list = document.getElementById('faqList');
+    list.innerHTML = '';
+    Object.keys(state.faq).forEach(function(key) {
+        var item = state.faq[key];
+        list.innerHTML += '<div class="faq-item" id="faq-'+key+'">' +
+            '<div class="faq-item-header">' +
+                '<span class="faq-key">'+key+'</span>' +
+                '<div class="faq-actions">' +
+                    '<button class="btn btn-primary btn-sm" onclick="editFaq(\''+key+'\')">✏️ Hariri</button>' +
+                    '<button class="btn btn-red btn-sm" onclick="deleteFaq(\''+key+'\')">🗑</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="faq-question">'+item.question+'</div>' +
+            '<div class="faq-answer">'+item.answer+'</div>' +
+            '</div>';
+    });
+}
+
+function editFaq(key) {
+    var item = state.faq[key];
+    var newQ = prompt('Badilisha swali:', item.question);
+    if (newQ===null) return;
+    var newA = prompt('Badilisha jibu:', item.answer);
+    if (newA===null) return;
+    var newKw = prompt('Badilisha keywords (tenga kwa koma):', item.keywords||'');
+    state.faq[key] = { question: newQ, answer: newA, keywords: newKw||'' };
+    db.collection('config').doc('chatbot_faq').set(state.faq).then(function(){
+        showAlert('faqAlert','✅ Swali limebadilishwa!','success');
+        renderFaqList();
+    }).catch(function(e){ showAlert('faqAlert','❌ '+e.message,'error'); });
+}
+
+function deleteFaq(key) {
+    if (!confirm('Futa swali "'+key+'"?')) return;
+    delete state.faq[key];
+    db.collection('config').doc('chatbot_faq').set(state.faq).then(function(){
+        showAlert('faqAlert','✅ Swali limefutwa!','success');
+        renderFaqList();
+    }).catch(function(e){ showAlert('faqAlert','❌ '+e.message,'error'); });
+}
+
+function addFaq() {
+    var key = document.getElementById('newFaqKey').value.trim().toLowerCase().replace(/\s/g,'_');
+    var q = document.getElementById('newFaqQuestion').value.trim();
+    var a = document.getElementById('newFaqAnswer').value.trim();
+    var kw = document.getElementById('newFaqKeywords').value.trim();
+    if (!key||!q||!a){ alert('Jaza key, swali, na jibu'); return; }
+    if (state.faq[key]){ alert('Key "'+key+'" ipo tayari — chagua jingine'); return; }
+    state.faq[key] = { question:q, answer:a, keywords:kw };
+    db.collection('config').doc('chatbot_faq').set(state.faq).then(function(){
+        document.getElementById('newFaqKey').value='';
+        document.getElementById('newFaqQuestion').value='';
+        document.getElementById('newFaqAnswer').value='';
+        document.getElementById('newFaqKeywords').value='';
+        showAlert('faqAlert','✅ Swali jipya limeongezwa!','success');
+        renderFaqList();
+    }).catch(function(e){ showAlert('faqAlert','❌ '+e.message,'error'); });
+}
+
+// ===== REVIEWS =====
+function loadReviews() {
+    var div = document.getElementById('reviewsList');
+    div.innerHTML = '<div class="loading-spinner">⏳ Inapakia...</div>';
+    db.collection('reviews').orderBy('createdAt','desc').get().then(function(snap){
+        document.getElementById('reviewCount').innerText = snap.size;
+        document.getElementById('statReviews').innerText = snap.size;
+        if (snap.empty){ div.innerHTML='<p style="color:var(--light);text-align:center;padding:20px">Hakuna maoni bado.</p>'; return; }
+        div.innerHTML='';
+        snap.forEach(function(doc){
+            var d=doc.data(), id=doc.id;
+            var date = d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString('sw') : '';
+            div.innerHTML += '<div class="review-item">' +
+                '<div class="review-item-body">' +
+                    '<div class="review-meta">' +
+                        '<span class="review-name">'+d.name.replace(/</g,'&lt;')+'</span>' +
+                        '<span class="review-stars">'+'⭐'.repeat(Math.max(1,Math.min(5,d.stars||5)))+'</span>' +
+                    '</div>' +
+                    '<div class="review-msg">'+d.message.replace(/</g,'&lt;')+'</div>' +
+                    '<div class="review-date">'+date+'</div>' +
+                '</div>' +
+                '<button class="btn btn-red btn-sm" onclick="deleteReview(\''+id+'\')">🗑 Futa</button>' +
+                '</div>';
+        });
+    }).catch(function(e){ div.innerHTML='<p style="color:var(--red)">❌ '+e.message+'</p>'; });
+}
+
+function deleteReview(id) {
+    if (!confirm('Futa maoni haya?')) return;
+    db.collection('reviews').doc(id).delete().then(function(){
+        showAlert('reviewsAlert','✅ Maoni yamefutwa!','success');
+        loadReviews();
+    }).catch(function(e){ showAlert('reviewsAlert','❌ '+e.message,'error'); });
+}
+</script>
+</body>
+</html>
