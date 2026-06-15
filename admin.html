@@ -353,21 +353,43 @@
         </div>
         <div class="panel">
             <div class="panel-header">
-                <h3>🏷️ Bei za Sale (Tigo)</h3>
-                <button class="btn btn-orange btn-sm" onclick="saveSalePrices()">💾 Hifadhi Bei</button>
+                <h3>🏷️ Bei za Sale — Tigo</h3>
+                <button class="btn btn-orange btn-sm" onclick="saveSalePrices('tigo')">💾 Hifadhi</button>
             </div>
             <div class="panel-body">
-                <table class="price-table" id="salePriceTable">
-                    <thead><tr><th>Bando</th><th>Bei ya Kawaida</th><th>Bei ya Sale</th><th>Punguzo</th><th>Kitendo</th></tr></thead>
+                <table class="price-table">
+                    <thead><tr><th>Bando</th><th>Bei Kawaida</th><th>Bei Sale</th><th>Punguzo</th><th>Kitendo</th></tr></thead>
                     <tbody id="salePriceBody"><tr><td colspan="5" class="loading-spinner">⏳ Inapakia...</td></tr></tbody>
                 </table>
                 <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-                    <h4 style="font-size:14px;margin-bottom:10px">➕ Ongeza Bei ya Sale</h4>
+                    <h4 style="font-size:14px;margin-bottom:10px">➕ Ongeza Bei ya Sale ya Tigo</h4>
                     <div class="field-row">
                         <div class="field-group"><label>Bando</label><input type="text" id="newSaleGb" placeholder="mfano: 25GB"></div>
                         <div class="field-group"><label>Bei Kawaida</label><input type="number" id="newSaleOrig" placeholder="44000"></div>
                         <div class="field-group"><label>Bei Sale</label><input type="number" id="newSaleSale" placeholder="40000"></div>
-                        <button class="btn btn-orange" onclick="addSalePrice()">+ Ongeza</button>
+                        <button class="btn btn-orange" onclick="addSalePrice('tigo')">+ Ongeza</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h3 style="color:var(--green)">🏷️ Bei za Sale — Halotel</h3>
+                <button class="btn btn-green btn-sm" onclick="saveSalePrices('halo')">💾 Hifadhi</button>
+            </div>
+            <div class="panel-body">
+                <table class="price-table">
+                    <thead><tr><th>Bando</th><th>Bei Kawaida</th><th>Bei Sale</th><th>Punguzo</th><th>Kitendo</th></tr></thead>
+                    <tbody id="haloSalePriceBody"><tr><td colspan="5" class="loading-spinner">⏳ Inapakia...</td></tr></tbody>
+                </table>
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+                    <h4 style="font-size:14px;margin-bottom:10px">➕ Ongeza Bei ya Sale ya Halotel</h4>
+                    <div class="field-row">
+                        <div class="field-group"><label>Bando</label><input type="text" id="newHaloSaleGb" placeholder="mfano: 20GB"></div>
+                        <div class="field-group"><label>Bei Kawaida</label><input type="number" id="newHaloSaleOrig" placeholder="19000"></div>
+                        <div class="field-group"><label>Bei Sale</label><input type="number" id="newHaloSaleSale" placeholder="17000"></div>
+                        <button class="btn btn-green" onclick="addSalePrice('halo')">+ Ongeza</button>
                     </div>
                 </div>
             </div>
@@ -449,7 +471,8 @@ var DEFAULT_HALO = {3:3500,4:4500,5:5500,6:6500,7:7500,8:8500,9:9000,10:10000,11
 var DEFAULT_SALE = {
     active: true, title: "🔥 Flash Sale ya Leo!", subtitle: "Bei zimepunguzwa kwa muda mfupi tu!",
     endsAt: "2025-06-20T18:00:00",
-    tigoPrices: {"25GB":{original:44000,sale:40000},"30GB":{original:52000,sale:47000},"40GB":{original:68000,sale:62000},"50GB":{original:85000,sale:78000},"60GB":{original:100000,sale:92000},"75GB":{original:122000,sale:112000},"100GB":{original:105000,sale:97000}}
+    tigoPrices: {"25GB":{original:44000,sale:40000},"30GB":{original:52000,sale:47000},"40GB":{original:68000,sale:62000},"50GB":{original:85000,sale:78000},"60GB":{original:100000,sale:92000},"75GB":{original:122000,sale:112000},"100GB":{original:105000,sale:97000}},
+    haloPrices: {"10GB":{original:10000,sale:9000},"15GB":{original:15000,sale:13000},"20GB":{original:19000,sale:17000},"25GB":{original:24000,sale:21000},"30GB":{original:28000,sale:25000},"35GB":{original:33000,sale:29000},"40GB":{original:37000,sale:33000}}
 };
 var DEFAULT_FAQ = {
     trust:     { question:"🤔 Kwanini niwaamini?",       answer:"Tumehudumia wateja wengi! ✅ Tunatuma bando ndani ya dakika 1-5, na kama tatizo lolote — tunarudisha pesa au kutuma upya. WhatsApp yetu iko wazi 24/7. Jaribu na GB ndogo kwanza utajionea! 💪", keywords:"amini,trust,uhakika,salama" },
@@ -700,42 +723,48 @@ function saveSaleConfig() {
     }).catch(function(e){ showAlert('saleAlert','❌ '+e.message,'error'); });
 }
 
-function saveSalePrices() {
-    var inputs = document.querySelectorAll('[data-salegb]');
+function saveSalePrices(net) {
     var prices = {};
-    inputs.forEach(function(inp){
+    document.querySelectorAll('[data-salegb][data-salenet="'+net+'"]').forEach(function(inp){
         var gb = inp.dataset.salegb, type = inp.dataset.type;
         if (!prices[gb]) prices[gb] = {};
         prices[gb][type] = parseInt(inp.value)||0;
     });
-    state.sale.tigoPrices = prices;
+    if (net === 'tigo') state.sale.tigoPrices = prices;
+    else state.sale.haloPrices = prices;
     db.collection('config').doc('flash_sale').set(state.sale).then(function(){
-        showAlert('saleAlert','✅ Bei za Sale zimehifadhiwa!','success');
-        renderSalePrices();
+        var label = net === 'tigo' ? 'Tigo' : 'Halotel';
+        showAlert('saleAlert','✅ Bei za Sale za '+label+' zimehifadhiwa!','success');
+        renderSalePricesFor(net);
     }).catch(function(e){ showAlert('saleAlert','❌ '+e.message,'error'); });
 }
 
-function addSalePrice() {
-    var gb=document.getElementById('newSaleGb').value.trim();
-    var orig=parseInt(document.getElementById('newSaleOrig').value);
-    var sale=parseInt(document.getElementById('newSaleSale').value);
+function addSalePrice(net) {
+    var gbId = net==='tigo' ? 'newSaleGb' : 'newHaloSaleGb';
+    var origId = net==='tigo' ? 'newSaleOrig' : 'newHaloSaleOrig';
+    var saleId = net==='tigo' ? 'newSaleSale' : 'newHaloSaleSale';
+    var gb=document.getElementById(gbId).value.trim();
+    var orig=parseInt(document.getElementById(origId).value);
+    var sale=parseInt(document.getElementById(saleId).value);
     if(!gb||!orig||!sale){ alert('Jaza fields zote'); return; }
-    if (!state.sale.tigoPrices) state.sale.tigoPrices={};
-    state.sale.tigoPrices[gb]={original:orig,sale:sale};
-    document.getElementById('newSaleGb').value='';
-    document.getElementById('newSaleOrig').value='';
-    document.getElementById('newSaleSale').value='';
+    if (net==='tigo') { if(!state.sale.tigoPrices) state.sale.tigoPrices={}; state.sale.tigoPrices[gb]={original:orig,sale:sale}; }
+    else { if(!state.sale.haloPrices) state.sale.haloPrices={}; state.sale.haloPrices[gb]={original:orig,sale:sale}; }
+    document.getElementById(gbId).value='';
+    document.getElementById(origId).value='';
+    document.getElementById(saleId).value='';
     db.collection('config').doc('flash_sale').set(state.sale).then(function(){
-        showAlert('saleAlert','✅ Bei ya Sale imeongezwa!','success');
-        renderSalePrices();
+        var label = net==='tigo'?'Tigo':'Halotel';
+        showAlert('saleAlert','✅ Bei ya Sale ya '+label+' imeongezwa!','success');
+        renderSalePricesFor(net);
     }).catch(function(e){ showAlert('saleAlert','❌ '+e.message,'error'); });
 }
 
-function deleteSalePrice(gb) {
-    if (!confirm('Futa '+gb+' kutoka Sale?')) return;
-    delete state.sale.tigoPrices[gb];
+function deleteSalePrice(net, gb) {
+    if (!confirm('Futa '+gb+' kutoka Sale ya '+(net==='tigo'?'Tigo':'Halotel')+'?')) return;
+    if (net==='tigo') delete state.sale.tigoPrices[gb];
+    else delete state.sale.haloPrices[gb];
     db.collection('config').doc('flash_sale').set(state.sale).then(function(){
-        renderSalePrices(); setSaveStatus('✅ Imefutwa');
+        renderSalePricesFor(net); setSaveStatus('✅ Imefutwa');
     });
 }
 
