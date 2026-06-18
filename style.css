@@ -1852,3 +1852,32 @@ textarea:focus-visible {
     text-align: left;
 }
 .ref-how p { font-size: 13px; margin: 4px 0; color: var(--text); }
+
+/* ============ LOAD MORE REVIEWS BUTTON ============ */
+#reviewsLoadMoreBtn:hover {
+    background: var(--blue) !important;
+    color: white !important;
+}
+
+/* ============ POPULAR BADGE ============ */
+.popular-badge {
+    position: absolute;
+    top: -10px;
+    right: -8px;
+    background: linear-gradient(90deg, #FF6B35, #E11D48);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 50px;
+    box-shadow: 0 3px 10px rgba(225,29,72,0.4);
+    white-space: nowrap;
+    z-index: 2;
+    animation: badgeBounce 0.4s ease;
+}
+
+@keyframes badgeBounce {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}

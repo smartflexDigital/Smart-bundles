@@ -19,7 +19,7 @@
 <div class="flash-banner" id="flashBanner">
     <div class="flash-banner-inner">
         <div class="flash-banner-text">
-            <strong id="flashTitle">🔥 Flash Sale ya Leo!</strong>
+            <strong id="flashTitle">🔥 Ofa za Muda Mfupi!</strong>
             <span id="flashSubtitle">Bei zimepunguzwa kwa muda mfupi tu!</span>
         </div>
         <div class="flash-timer">
@@ -118,7 +118,7 @@
 <!-- FLASH SALE CARDS -->
 <div class="flash-sale-section" id="flashSaleSection">
     <div class="flash-sale-header">
-        <h2>⚡ Tigo — Bei za Sale</h2>
+        <h2>⚡ Tigo — Ofa za Muda Mfupi</h2>
         <span class="flash-tag">LIMITED</span>
     </div>
     <div class="sale-cards-row" id="saleCardsRow"></div>
@@ -185,7 +185,7 @@
 <!-- HALOTEL FLASH SALE CARDS -->
 <div class="flash-sale-section" id="flashSaleSectionHalo">
     <div class="flash-sale-header">
-        <h2>⚡ Halotel — Bei za Sale</h2>
+        <h2>⚡ Halotel — Ofa za Muda Mfupi</h2>
         <span class="flash-tag">LIMITED</span>
     </div>
     <div class="sale-cards-row" id="saleCardsRowHalo"></div>
@@ -258,6 +258,11 @@
 <h2>💬 Maoni ya Wateja</h2>
 <div id="reviewsLoading" style="color:#6B7280;margin:20px">⏳ Inapakia maoni...</div>
 <div id="reviews"></div>
+<div id="reviewsLoadMoreWrap" style="text-align:center;margin:10px 0 30px;display:none">
+    <button id="reviewsLoadMoreBtn" onclick="showMoreReviews()" style="background:white;border:2px solid var(--blue);color:var(--blue);padding:12px 28px;border-radius:50px;font-weight:700;font-size:14px;cursor:pointer;transition:background 0.2s,color 0.2s">
+        Tazama Maoni Zaidi ⬇️
+    </button>
+</div>
 
 <!-- CHATBOT — inafunguka tu ukigusa kitufe -->
 <button class="chatbot-toggle" id="chatToggleBtn" onclick="toggleChat()" aria-label="Fungua msaada">
@@ -322,8 +327,9 @@ var db = firebase.firestore();
 
 // ===== SALE CONFIG =====
 var SALE = {
-    active: true,
-    title: "🔥 Flash Sale ya Leo!",
+    activeTigo: true,
+    activeHalo: true,
+    title: "🔥 Ofa za Muda Mfupi!",
     subtitle: "Bei zimepunguzwa kwa muda mfupi tu!",
     endsAt: "2025-06-20T18:00:00",
     tigoPrices: {
@@ -351,6 +357,50 @@ var TIGO = {1:1800,2:3800,3:5500,4:7200,5:9000,6:10700,7:12500,8:14000,9:15800,1
 var HALO = {3:3500,4:4500,5:5500,6:6500,7:7500,8:8500,9:9000,10:10000,11:11000,12:12000,13:13000,14:14000,15:15000,16:16000,17:17000,18:18000,19:18500,20:19000,25:24000,30:28000,35:33000,40:37000};
 
 // ===== LOAD LIVE CONFIG FROM FIRESTORE =====
+// ===== BADGE YA "INAPENDWA ZAIDI" =====
+function loadPopularBadges() {
+    db.collection('bundle_clicks').get().then(function(snap) {
+        if (snap.empty) return;
+
+        var tigoTop = null, haloTop = null;
+        var tigoMax = 0, haloMax = 0;
+
+        snap.forEach(function(doc) {
+            var d = doc.data();
+            var clicks = (d.whatsappSent || 0) + (d.modalOpens || 0);
+            var name = d.bundleName || '';
+            if (name.indexOf('Tigo') !== -1 && clicks > tigoMax) {
+                tigoMax = clicks; tigoTop = name;
+            }
+            if (name.indexOf('Halotel') !== -1 && clicks > haloMax) {
+                haloMax = clicks; haloTop = name;
+            }
+        });
+
+        // Weka badge kwenye card inayolingana — tunatumia onclick attribute kutafuta
+        function markCard(bundleName) {
+            if (!bundleName) return;
+            var buttons = document.querySelectorAll('.container .card button');
+            buttons.forEach(function(btn) {
+                var oc = btn.getAttribute('onclick') || '';
+                if (oc.indexOf("'" + bundleName + "'") !== -1) {
+                    var card = btn.closest('.card');
+                    if (card && !card.querySelector('.popular-badge')) {
+                        var badge = document.createElement('div');
+                        badge.className = 'popular-badge';
+                        badge.innerText = '🔥 Maarufu';
+                        card.appendChild(badge);
+                        card.style.position = 'relative';
+                    }
+                }
+            });
+        }
+
+        markCard(tigoTop);
+        markCard(haloTop);
+    }).catch(function(){});
+}
+
 function loadLiveConfig() {
     // Bei za Tigo
     db.collection('config').doc('tigo_prices').onSnapshot(function(doc) {
@@ -484,6 +534,7 @@ function openOrder(name, price) {
     document.getElementById('phoneError').innerText = '';
     document.getElementById('orderModal').style.display = 'flex';
     setTimeout(function(){ document.getElementById('modalPhone').focus(); }, 100);
+    trackClick(name, 'modal_open');
 }
 function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
 function sendOrder() {
@@ -495,7 +546,20 @@ function sendOrder() {
     }
     var msg = 'Habari! Nataka kununua bando:\n\n📦 ' + _orderName + '\n💰 Bei: ' + _orderPrice + '\n📱 Namba ya kuwekewa bando: ' + phone + '\n\nTafadhali nisaidie.';
     window.open('https://wa.me/255612626715?text='+encodeURIComponent(msg),'_blank');
+    trackClick(_orderName, 'whatsapp_sent');
     closeModal();
+}
+
+// ===== CLICK TRACKING (kwa badge ya "Inapendwa Zaidi" na Admin stats) =====
+function trackClick(bundleName, eventType) {
+    // Tengeneza ID salama kutoka jina la bando (futa nafasi/alama)
+    var safeId = bundleName.replace(/[^a-zA-Z0-9]/g, '_');
+    var field = eventType === 'whatsapp_sent' ? 'whatsappSent' : 'modalOpens';
+    var update = {};
+    update[field] = firebase.firestore.FieldValue.increment(1);
+    update.bundleName = bundleName;
+    update.lastClickAt = firebase.firestore.FieldValue.serverTimestamp();
+    db.collection('bundle_clicks').doc(safeId).set(update, { merge: true }).catch(function(){});
 }
 document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
 
@@ -510,42 +574,74 @@ function searchBundles() {
 
 // ===== FLASH SALE =====
 function initSale() {
+    var anyActive = SALE.activeTigo || SALE.activeHalo;
     var banner = document.getElementById('flashBanner');
-    var section = document.getElementById('flashSaleSection');
-    if (!SALE.active) {
-        if(banner) banner.classList.remove('visible');
-        if(section) section.classList.remove('visible');
-        return;
-    }
-    if(banner) banner.classList.add('visible');
-    if(section) section.classList.add('visible');
     var titleEl = document.getElementById('flashTitle');
     var subEl = document.getElementById('flashSubtitle');
-    if(titleEl) titleEl.innerText = SALE.title;
-    if(subEl) subEl.innerText = SALE.subtitle;
-    var row = document.getElementById('saleCardsRow');
-    if(row) row.innerHTML = ''; // Clear before re-rendering
-    Object.keys(SALE.tigoPrices).forEach(function(gb) {
-        var p = SALE.tigoPrices[gb];
-        row.innerHTML += '<div class="sale-card"><h3>'+gb+'</h3>'+
-            '<p class="original-price">'+p.original.toLocaleString()+' TZS</p>'+
-            '<p class="sale-price">'+p.sale.toLocaleString()+' TZS</p>'+
-            '<button onclick="openOrder(\''+gb+' Tigo SALE\',\''+p.sale.toLocaleString()+' TZS\')">Nunua Sasa</button></div>';
-    });
-    function tick() {
-        var diff = new Date(SALE.endsAt) - new Date();
-        if (diff <= 0) {
-            var b=document.getElementById('flashBanner');
-            if(b) b.classList.remove('visible');
-            return;
-        }
-        var h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
-        var th=document.getElementById('th'),tm=document.getElementById('tm'),ts=document.getElementById('ts');
-        if(th) th.innerText=String(h).padStart(2,'0');
-        if(tm) tm.innerText=String(m).padStart(2,'0');
-        if(ts) ts.innerText=String(s).padStart(2,'0');
+
+    if (anyActive) {
+        if (banner) banner.classList.add('visible');
+        if (titleEl) titleEl.innerText = SALE.title;
+        if (subEl) subEl.innerText = SALE.subtitle;
+    } else {
+        if (banner) banner.classList.remove('visible');
     }
-    tick(); window._saleTimer = setInterval(tick, 1000);
+
+    // ---- TIGO sale cards ----
+    var tigoSection = document.getElementById('flashSaleSection');
+    var tigoRow = document.getElementById('saleCardsRow');
+    if (tigoRow) tigoRow.innerHTML = '';
+    if (SALE.activeTigo && SALE.tigoPrices && Object.keys(SALE.tigoPrices).length > 0) {
+        if (tigoSection) tigoSection.classList.add('visible');
+        Object.keys(SALE.tigoPrices).forEach(function(gb) {
+            var p = SALE.tigoPrices[gb];
+            if (tigoRow) tigoRow.innerHTML += '<div class="sale-card"><h3>'+gb+'</h3>'+
+                '<p class="original-price">'+p.original.toLocaleString()+' TZS</p>'+
+                '<p class="sale-price">'+p.sale.toLocaleString()+' TZS</p>'+
+                '<button onclick="openOrder(\''+gb+' Tigo OFA\',\''+p.sale.toLocaleString()+' TZS\')">Nunua Sasa</button></div>';
+        });
+    } else {
+        if (tigoSection) tigoSection.classList.remove('visible');
+    }
+
+    // ---- HALOTEL sale cards ----
+    var haloSection = document.getElementById('flashSaleSectionHalo');
+    var haloRow = document.getElementById('saleCardsRowHalo');
+    if (haloRow) haloRow.innerHTML = '';
+    if (SALE.activeHalo && SALE.haloPrices && Object.keys(SALE.haloPrices).length > 0) {
+        if (haloSection) haloSection.classList.add('visible');
+        Object.keys(SALE.haloPrices).forEach(function(gb) {
+            var p = SALE.haloPrices[gb];
+            if (haloRow) haloRow.innerHTML += '<div class="sale-card" style="border-color:var(--halotel)">'+
+                '<h3 style="color:var(--halotel)">'+gb+'</h3>'+
+                '<p class="original-price">'+p.original.toLocaleString()+' TZS</p>'+
+                '<p class="sale-price">'+p.sale.toLocaleString()+' TZS</p>'+
+                '<button style="background:linear-gradient(90deg,var(--halotel),#00a07a)" onclick="openOrder(\''+gb+' Halotel OFA\',\''+p.sale.toLocaleString()+' TZS\')">Nunua Sasa</button></div>';
+        });
+    } else {
+        if (haloSection) haloSection.classList.remove('visible');
+    }
+
+    // ---- COUNTDOWN TIMER ----
+    if (window._saleTimer) clearInterval(window._saleTimer);
+    if (anyActive) {
+        function tick() {
+            var diff = new Date(SALE.endsAt) - new Date();
+            if (diff <= 0) {
+                var b = document.getElementById('flashBanner');
+                if (b) b.classList.remove('visible');
+                clearInterval(window._saleTimer);
+                return;
+            }
+            var h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+            var th=document.getElementById('th'),tm=document.getElementById('tm'),ts=document.getElementById('ts');
+            if(th) th.innerText=String(h).padStart(2,'0');
+            if(tm) tm.innerText=String(m).padStart(2,'0');
+            if(ts) ts.innerText=String(s).padStart(2,'0');
+        }
+        tick();
+        window._saleTimer = setInterval(tick, 1000);
+    }
 }
 
 // ===== STOCK COUNTERS =====
@@ -575,32 +671,98 @@ function trackOrder() {
     });
 }
 
-// ===== REFERRAL =====
+// ===== REFERRAL SYSTEM (Firestore) =====
 var _myCode = '', _myPhone = '';
+
 function generateRefCode() {
     var phone = document.getElementById('refPhone').value.trim();
     if (!phone || !/^[0-9]{9,13}$/.test(phone)) { alert('Weka namba sahihi ya simu'); return; }
+
     var letters = 'ABCDEFGHJKLMNPRSTUVWXYZ';
     var code = phone.slice(1,4) + phone.slice(-3) + letters[parseInt(phone.slice(-3))%letters.length];
+    code = code.toUpperCase();
     _myCode = code; _myPhone = phone;
-    document.getElementById('refCodeVal').innerText = code;
-    document.getElementById('refCodeBox').classList.add('visible');
-    document.getElementById('refShareBtn').style.display = 'block';
-    document.getElementById('refClaimBtn').style.display = 'block';
+
+    // Hifadhi Firestore — ikiwa code ipo tayari, isasishe tu
+    db.collection('referrals').doc(code).set({
+        phone: phone,
+        code: code,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        totalInvited: 0,
+        totalDiscount: 0
+    }, { merge: true }).then(function() {
+        document.getElementById('refCodeVal').innerText = code;
+        document.getElementById('refCodeBox').classList.add('visible');
+        document.getElementById('refShareBtn').style.display = 'block';
+        document.getElementById('refClaimBtn').style.display = 'block';
+    }).catch(function(e) {
+        // Hata kama Firestore inashindwa, bado onyesha code
+        document.getElementById('refCodeVal').innerText = code;
+        document.getElementById('refCodeBox').classList.add('visible');
+        document.getElementById('refShareBtn').style.display = 'block';
+        document.getElementById('refClaimBtn').style.display = 'block';
+    });
 }
+
 function copyRefCode() {
     var code = document.getElementById('refCodeVal').innerText;
-    if (navigator.clipboard) { navigator.clipboard.writeText(code).then(function(){ alert('Imenakiliwa: '+code+' ✅'); }); }
-    else { alert('Code yako: '+code); }
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(code).then(function(){ alert('Imenakiliwa: '+code+' ✅'); });
+    } else { alert('Code yako: '+code); }
 }
+
 function shareRef() {
-    var msg = '🎁 Habari rafiki!\n\nNinakushirikisha Smart Bundles — bando za Tigo & Halotel kwa bei nafuu sana!\n\n💰 Tumia code hii upate discount: *'+_myCode+'*\n\nOrder rahisi kwa WhatsApp, malipo M-Pesa/Airtel/Mixx! 🚀';
+    var code = _myCode;
+    // Rekorodi share kwenye Firestore
+    if (code) {
+        db.collection('referrals').doc(code).update({
+            totalInvited: firebase.firestore.FieldValue.increment(1),
+            lastSharedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(function(){});
+    }
+    var msg = '👋 Habari rafiki!\nNinakushirikisha Smart Bundles — bando za Tigo & Halotel kwa bei nafuu sana!\nhuduma zote ziko hapa. 👉https://rebrand.ly/smartbundles\n ⏪Tumia code hii upate discount: *'+code+'*\nOrder rahisi kwa WhatsApp, malipo M-Pesa/Airtel/Mixx! 💳';
     window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
 }
+
 function claimDiscount() {
-    var msg = 'Habari! Ninatumia referral code yangu: '+_myCode+'\nNataka kudai discount yangu ya 500 TZS. Asante!';
+    var code = _myCode;
+    // Rekorodi dai la discount
+    if (code) {
+        db.collection('referrals').doc(code).update({
+            totalDiscount: firebase.firestore.FieldValue.increment(500),
+            lastClaimedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(function(){});
+        db.collection('referral_claims').add({
+            code: code,
+            phone: _myPhone,
+            amount: 500,
+            claimedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'pending'
+        }).catch(function(){});
+    }
+    var msg = 'Habari! Ninatumia referral code yangu: '+code+'\nNataka kudai discount yangu ya 500 TZS. Asante!';
     window.open('https://wa.me/255612626715?text='+encodeURIComponent(msg),'_blank');
 }
+
+// Angalia kama URL ina referral code (rafiki alifuata link)
+(function checkRefLink() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var refCode = urlParams.get('ref');
+    if (refCode) {
+        // Hifadhi session
+        sessionStorage.setItem('refCode', refCode);
+        // Rekorodi visit
+        db.collection('referrals').doc(refCode).update({
+            visits: firebase.firestore.FieldValue.increment(1),
+            lastVisitAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(function(){});
+        // Onyesha banner ndogo
+        var banner = document.createElement('div');
+        banner.style.cssText = 'background:#E7FBF2;border:1px solid #A7F3D0;color:#0F766E;padding:10px 16px;text-align:center;font-size:13px;font-weight:600;';
+        banner.innerText = '🎁 Umealikwa! Unanufaika na discount ya 500 TZS ukifanya order yako ya kwanza.';
+        document.body.insertBefore(banner, document.body.firstChild);
+    }
+})();
 
 // ===== REVIEWS =====
 function setStars(v) {
@@ -621,16 +783,48 @@ function addReview() {
     .then(function(){ btn.innerText='Tuma Maoni'; btn.disabled=false; document.getElementById('revName').value=''; document.getElementById('revMessage').value=''; setStars(5); alert('Asante kwa maoni yako! ⭐'); })
     .catch(function(e){ btn.innerText='Tuma Maoni'; btn.disabled=false; alert('Tatizo: '+e.message); });
 }
+var REVIEWS_PER_PAGE = 5;
+var allReviewsData = [];
+var reviewsShownCount = REVIEWS_PER_PAGE;
+
+function renderReviews() {
+    var div = document.getElementById('reviews');
+    var wrap = document.getElementById('reviewsLoadMoreWrap');
+    var btn = document.getElementById('reviewsLoadMoreBtn');
+
+    if (allReviewsData.length === 0) {
+        div.innerHTML = '<p style="color:#6B7280;margin:20px">Bado hakuna maoni. Kuwa wa kwanza!</p>';
+        wrap.style.display = 'none';
+        return;
+    }
+
+    var toShow = allReviewsData.slice(0, reviewsShownCount);
+    var html = '';
+    toShow.forEach(function(d) {
+        html += '<div class="review-card"><div class="stars">' + '⭐'.repeat(Math.max(1,Math.min(5,d.stars||5))) + '</div><p>' + d.message.replace(/</g,'&lt;') + '</p><h4>— ' + d.name.replace(/</g,'&lt;') + '</h4></div>';
+    });
+    div.innerHTML = html;
+
+    if (reviewsShownCount < allReviewsData.length) {
+        wrap.style.display = 'block';
+        var remaining = allReviewsData.length - reviewsShownCount;
+        btn.innerText = 'Tazama Maoni Zaidi (' + remaining + ') ⬇️';
+    } else {
+        wrap.style.display = 'none';
+    }
+}
+
+function showMoreReviews() {
+    reviewsShownCount += REVIEWS_PER_PAGE;
+    renderReviews();
+}
+
 db.collection('reviews').onSnapshot(function(snap){
     document.getElementById('reviewsLoading').style.display='none';
-    var div=document.getElementById('reviews');
-    if(snap.empty){ div.innerHTML='<p style="color:#6B7280;margin:20px">Bado hakuna maoni. Kuwa wa kwanza!</p>'; return; }
     var docs=[]; snap.forEach(function(d){ docs.push(Object.assign({id:d.id},d.data())); });
     docs.sort(function(a,b){ return (b.createdAt?b.createdAt.toMillis():0)-(a.createdAt?a.createdAt.toMillis():0); });
-    div.innerHTML='';
-    docs.forEach(function(d){
-        div.innerHTML+='<div class="review-card"><div class="stars">'+'⭐'.repeat(Math.max(1,Math.min(5,d.stars||5)))+'</div><p>'+d.message.replace(/</g,'&lt;')+'</p><h4>— '+d.name.replace(/</g,'&lt;')+'</h4></div>';
-    });
+    allReviewsData = docs;
+    renderReviews();
 },function(e){ document.getElementById('reviewsLoading').innerText='❌ Imeshindwa kupakia maoni.'; });
 
 // ===== REVIEW SLIDER =====
@@ -750,6 +944,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 4. Live config kutoka Firestore (Admin Dashboard)
     loadLiveConfig();
+
+    // 5. Badge ya "Inapendwa Zaidi" kulingana na clicks
+    setTimeout(loadPopularBadges, 800);
 });
 </script>
 </body>

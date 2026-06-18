@@ -225,9 +225,11 @@
         <button class="tab-btn active" onclick="switchTab('overview')">📊 Muhtasari</button>
         <button class="tab-btn" onclick="switchTab('tigo')">📡 Bei Tigo</button>
         <button class="tab-btn" onclick="switchTab('halotel')">📶 Bei Halotel</button>
-        <button class="tab-btn" onclick="switchTab('sale')">⚡ Flash Sale</button>
+        <button class="tab-btn" onclick="switchTab('sale')">⚡ Ofa za Muda Mfupi</button>
         <button class="tab-btn" onclick="switchTab('chatbot')">🤖 Chatbot FAQ</button>
         <button class="tab-btn" onclick="switchTab('reviews')">💬 Maoni</button>
+        <button class="tab-btn" onclick="switchTab('referrals')">🎁 Referrals</button>
+        <button class="tab-btn" onclick="switchTab('analytics')">📈 Analytics</button>
     </div>
 
     <!-- TAB: OVERVIEW -->
@@ -311,17 +313,23 @@
     <div class="tab-content" id="tab-sale">
         <div class="alert" id="saleAlert"></div>
         <div class="panel">
-            <div class="panel-header"><h3>⚡ Mipangilio ya Flash Sale</h3></div>
+            <div class="panel-header"><h3>⚡ Mipangilio ya Ofa za Muda Mfupi</h3></div>
             <div class="panel-body">
                 <div class="toggle-row">
-                    <span class="toggle-label">Flash Sale:</span>
-                    <button class="toggle-switch" id="saleToggle" onclick="toggleSale()"></button>
-                    <span id="saleToggleLabel" style="font-size:14px;color:var(--light)">Imezimwa</span>
+                    <span class="toggle-label">Ofa za Tigo:</span>
+                    <button class="toggle-switch" id="saleToggleTigo" onclick="toggleSale('tigo')"></button>
+                    <span id="saleToggleLabelTigo" style="font-size:14px;color:var(--light)">Imezimwa</span>
                 </div>
+                <div class="toggle-row">
+                    <span class="toggle-label">Ofa za Halotel:</span>
+                    <button class="toggle-switch" id="saleToggleHalo" onclick="toggleSale('halo')"></button>
+                    <span id="saleToggleLabelHalo" style="font-size:14px;color:var(--light)">Imezimwa</span>
+                </div>
+                <p style="font-size:12px;color:var(--light);margin-bottom:16px">💡 Unaweza kuwasha Tigo peke yake, Halotel peke yake, au zote mbili.</p>
                 <div class="field-row">
                     <div class="field-group" style="flex:2">
                         <label>Kichwa (Title)</label>
-                        <input type="text" id="saleTitle" placeholder="mfano: 🔥 Flash Sale ya Leo!">
+                        <input type="text" id="saleTitle" placeholder="mfano: 🔥 Ofa za Muda Mfupi!">
                     </div>
                 </div>
                 <div class="field-row">
@@ -353,7 +361,7 @@
         </div>
         <div class="panel">
             <div class="panel-header">
-                <h3>🏷️ Bei za Sale — Tigo</h3>
+                <h3>🏷️ Ofa za Tigo</h3>
                 <button class="btn btn-orange btn-sm" onclick="saveSalePrices('tigo')">💾 Hifadhi</button>
             </div>
             <div class="panel-body">
@@ -362,7 +370,7 @@
                     <tbody id="salePriceBody"><tr><td colspan="5" class="loading-spinner">⏳ Inapakia...</td></tr></tbody>
                 </table>
                 <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-                    <h4 style="font-size:14px;margin-bottom:10px">➕ Ongeza Bei ya Sale ya Tigo</h4>
+                    <h4 style="font-size:14px;margin-bottom:10px">➕ Ongeza Ofa ya Tigo</h4>
                     <div class="field-row">
                         <div class="field-group"><label>Bando</label><input type="text" id="newSaleGb" placeholder="mfano: 25GB"></div>
                         <div class="field-group"><label>Bei Kawaida</label><input type="number" id="newSaleOrig" placeholder="44000"></div>
@@ -375,7 +383,7 @@
 
         <div class="panel">
             <div class="panel-header">
-                <h3 style="color:var(--green)">🏷️ Bei za Sale — Halotel</h3>
+                <h3 style="color:var(--green)">🏷️ Ofa za Halotel</h3>
                 <button class="btn btn-green btn-sm" onclick="saveSalePrices('halo')">💾 Hifadhi</button>
             </div>
             <div class="panel-body">
@@ -384,7 +392,7 @@
                     <tbody id="haloSalePriceBody"><tr><td colspan="5" class="loading-spinner">⏳ Inapakia...</td></tr></tbody>
                 </table>
                 <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-                    <h4 style="font-size:14px;margin-bottom:10px">➕ Ongeza Bei ya Sale ya Halotel</h4>
+                    <h4 style="font-size:14px;margin-bottom:10px">➕ Ongeza Ofa ya Halotel</h4>
                     <div class="field-row">
                         <div class="field-group"><label>Bando</label><input type="text" id="newHaloSaleGb" placeholder="mfano: 20GB"></div>
                         <div class="field-group"><label>Bei Kawaida</label><input type="number" id="newHaloSaleOrig" placeholder="19000"></div>
@@ -444,15 +452,105 @@
             </div>
         </div>
     </div>
+    <!-- TAB: REFERRALS -->
+    <div class="tab-content" id="tab-referrals">
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-num" style="color:var(--orange)" id="statRefTotal">—</div><div class="stat-label">Watu waliofanya Code</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:var(--blue)" id="statRefInvited">—</div><div class="stat-label">Jumla ya Shares</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:var(--red)" id="statRefClaims">—</div><div class="stat-label">Discount Zilizoombwa</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:var(--green)" id="statRefAmount">—</div><div class="stat-label">Jumla TZS (Pending)</div></div>
+        </div>
+
+        <div class="alert" id="refAlert"></div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h3>🎁 Referral Codes Zote</h3>
+                <button class="btn btn-sm" style="background:#F1F5F9" onclick="loadReferrals()">🔄 Onyesha upya</button>
+            </div>
+            <div class="panel-body">
+                <table class="price-table" id="refTable">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Namba ya Simu</th>
+                            <th>Shares</th>
+                            <th>Visits</th>
+                            <th>Discount (TZS)</th>
+                            <th>Hali</th>
+                            <th>Kitendo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="refTableBody">
+                        <tr><td colspan="7" class="loading-spinner">⏳ Inapakia...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header"><h3>📋 Madai ya Discount (Pending)</h3></div>
+            <div class="panel-body" id="claimsList">
+                <div class="loading-spinner">⏳ Inapakia...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: ANALYTICS -->
+    <div class="tab-content" id="tab-analytics">
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-num" style="color:var(--blue)" id="statTotalClicks">—</div><div class="stat-label">Jumla Clicks</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:var(--green)" id="statTotalWA">—</div><div class="stat-label">WhatsApp Zilizotumwa</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:var(--orange)" id="statTopTigo">—</div><div class="stat-label">Tigo Maarufu</div></div>
+            <div class="stat-card"><div class="stat-num" style="color:var(--red)" id="statTopHalo">—</div><div class="stat-label">Halotel Maarufu</div></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h3>📊 Bando Zinazopendwa Zaidi</h3>
+                <button class="btn btn-sm" style="background:#F1F5F9" onclick="loadAnalytics()">🔄 Onyesha upya</button>
+            </div>
+            <div class="panel-body">
+                <table class="price-table" id="analyticsTable">
+                    <thead>
+                        <tr><th>Bando</th><th>Walifungua Modal</th><th>Walituma WhatsApp</th><th>Jumla</th><th>Conversion</th></tr>
+                    </thead>
+                    <tbody id="analyticsTableBody"><tr><td colspan="5" class="loading-spinner">⏳ Inapakia...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header"><h3>📥 Pakua Data (Excel)</h3></div>
+            <div class="panel-body">
+                <p style="font-size:13px;color:var(--light);margin-bottom:16px">Pakua data zako kama faili la Excel kabla ya kufuta — kama unataka kuhifadhi rekodi.</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <button class="btn btn-primary" onclick="exportToExcel('clicks')">📊 Pakua Clicks Data</button>
+                    <button class="btn btn-green" onclick="exportToExcel('reviews')">💬 Pakua Maoni</button>
+                    <button class="btn btn-orange" onclick="exportToExcel('referrals')">🎁 Pakua Referrals</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" style="border:2px solid #FCA5A5">
+            <div class="panel-header" style="background:#FEF2F2"><h3 style="color:var(--red)">⚠️ Eneo la Hatari</h3></div>
+            <div class="panel-body">
+                <p style="font-size:13px;color:var(--light);margin-bottom:16px">Kufuta data hakurudishwi nyuma. Pakua Excel kwanza kama unataka kuhifadhi rekodi.</p>
+                <button class="btn btn-red" onclick="clearAnalyticsData()">🗑️ Futa Data Yote ya Analytics (Clicks)</button>
+                <p id="clearStatus" style="font-size:13px;margin-top:10px;display:none"></p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- FIREBASE -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
 // ===== CONFIG =====
-var ADMIN_PASSWORD = "smart2025"; // ← Badilisha hii!
+var ADMIN_PASSWORD = "smart2025"; // Badilisha hii!
 
 // ===== FIREBASE =====
 firebase.initializeApp({
@@ -465,28 +563,46 @@ firebase.initializeApp({
 });
 var db = firebase.firestore();
 
-// ===== DEFAULT DATA (website inasoma hii kama Firestore haina) =====
+// ===== DEFAULTS =====
 var DEFAULT_TIGO = {1:1800,2:3800,3:5500,4:7200,5:9000,6:10700,7:12500,8:14000,9:15800,10:18000,15:26000,20:35000};
 var DEFAULT_HALO = {3:3500,4:4500,5:5500,6:6500,7:7500,8:8500,9:9000,10:10000,11:11000,12:12000,13:13000,14:14000,15:15000,16:16000,17:17000,18:18000,19:18500,20:19000,25:24000,30:28000,35:33000,40:37000};
 var DEFAULT_SALE = {
-    active: true, title: "🔥 Flash Sale ya Leo!", subtitle: "Bei zimepunguzwa kwa muda mfupi tu!",
+    activeTigo: true,
+    activeHalo: true,
+    title: "Ofa za Muda Mfupi!",
+    subtitle: "Bei zimepunguzwa kwa muda mfupi tu!",
     endsAt: "2025-06-20T18:00:00",
-    tigoPrices: {"25GB":{original:44000,sale:40000},"30GB":{original:52000,sale:47000},"40GB":{original:68000,sale:62000},"50GB":{original:85000,sale:78000},"60GB":{original:100000,sale:92000},"75GB":{original:122000,sale:112000},"100GB":{original:105000,sale:97000}},
-    haloPrices: {"10GB":{original:10000,sale:9000},"15GB":{original:15000,sale:13000},"20GB":{original:19000,sale:17000},"25GB":{original:24000,sale:21000},"30GB":{original:28000,sale:25000},"35GB":{original:33000,sale:29000},"40GB":{original:37000,sale:33000}}
+    tigoPrices: {
+        "25GB": {original:44000, sale:40000},
+        "30GB": {original:52000, sale:47000},
+        "40GB": {original:68000, sale:62000},
+        "50GB": {original:85000, sale:78000},
+        "60GB": {original:100000, sale:92000},
+        "75GB": {original:122000, sale:112000},
+        "100GB": {original:105000, sale:97000}
+    },
+    haloPrices: {
+        "10GB": {original:10000, sale:9000},
+        "15GB": {original:15000, sale:13000},
+        "20GB": {original:19000, sale:17000},
+        "25GB": {original:24000, sale:21000},
+        "30GB": {original:28000, sale:25000},
+        "35GB": {original:33000, sale:29000},
+        "40GB": {original:37000, sale:33000}
+    }
 };
 var DEFAULT_FAQ = {
-    trust:     { question:"🤔 Kwanini niwaamini?",       answer:"Tumehudumia wateja wengi! ✅ Tunatuma bando ndani ya dakika 1-5, na kama tatizo lolote — tunarudisha pesa au kutuma upya. WhatsApp yetu iko wazi 24/7. Jaribu na GB ndogo kwanza utajionea! 💪", keywords:"amini,trust,uhakika,salama" },
-    speed:     { question:"🚀 Speed ya Halotel",          answer:"Jinsi ya kuongeza speed ya Halotel: 📶\n\n1️⃣ Settings → Mobile Network → Network Mode → chagua 4G/LTE Only\n2️⃣ Weka APN: internet\n3️⃣ Reboot simu yako\n4️⃣ Jaribu mahali palio wazi (nje ya nyumba)", keywords:"speed,haraka,polepole,mbio,slow" },
-    area:      { question:"📍 Mtandao unasumbua eneo langu", answer:"Tatizo la mtandao linategemea eneo lako 📍\n\n🔵 Tigo — nzuri mijini\n🟡 Halotel — bora vijijini na maeneo ya mbali\n\nNiambie uko wapi nikupe ushauri bora!", keywords:"eneo,sehemu,coverage,signal,mbali" },
-    howlong:   { question:"⏱ Muda wa kupata bando",       answer:"Tunatuma bando ndani ya dakika 1-5 tu! ⚡\n\nHakikisha unatuma screenshot ya malipo WhatsApp. Umepita dakika 10? Wasiliana nasi mara moja!", keywords:"muda,lini,dakika,subiri,haraka" },
-    compare:   { question:"⚖️ Tigo vs Halotel",            answer:"🔵 TIGO: Nzuri mijini, Miezi 2, 1-20GB\n🟡 HALOTEL: Bei nafuu zaidi, Miezi 3-6, 3-40GB+\n\n💡 Data nyingi → Halotel. Speed mijini → Tigo!", keywords:"tigo,halotel,bora,tofauti,compare,ipi" },
-    payment:   { question:"💳 Jinsi ya kulipia",            answer:"Tunapokea: 💳\n\n📲 M-Pesa → 136077210 (HANSI LUCAS)\n📲 Airtel Money → 136077210\n📲 Mixx by Yas → 136077210\n\nBaada ya kulipa, tuma screenshot WhatsApp!", keywords:"lipia,lipa,malipo,mpesa,airtel,namba" },
-    failed:    { question:"❌ Bando haikufika",             answer:"Pole sana! ❌ Hatua:\n\n1. Subiri dakika 10\n2. Angalia namba uliyotupa\n3. Washa/zima simu\n4. Wasiliana nasi → 255612626715 na screenshot\n\n🔒 Tutasuluhisha au kurudisha pesa!", keywords:"haikufika,haijafika,tatizo,fault" },
-    refund:    { question:"💰 Napata refund?",              answer:"Ndiyo — tunalipa refund! 💰\n\nMasharti:\n• Bando halikufika ndani ya saa 1\n• Malipo yamethibitishwa\n\nTuma WhatsApp: 'Nataka refund — [namba] — [kiasi]'", keywords:"refund,rudisha,pesa" },
-    recommend: { question:"💡 Nibadilishe bando gani?",    answer:"Kulingana na matumizi: 💡\n\n📱 WhatsApp/FB → Halotel 5-10GB\n🎬 YouTube → Halotel 20-30GB\n💼 Zoom/Kazi → 15GB Tigo au Halotel\n🏠 Familia → Halotel 35-40GB", keywords:"recommend,nipendekeze,nibadilishe,gani" }
+    trust:     { question:"Kwanini niwaamini?", answer:"Tumehudumia wateja wengi! Tunatuma bando ndani ya dakika 1-5, na kama tatizo lolote tunarudisha pesa au kutuma upya. WhatsApp yetu iko wazi 24/7.", keywords:"amini,trust,uhakika,salama" },
+    speed:     { question:"Speed ya Halotel", answer:"Jinsi ya kuongeza speed ya Halotel: Settings, Mobile Network, Network Mode, chagua 4G/LTE Only. Weka APN: internet. Reboot simu yako. Jaribu mahali palio wazi.", keywords:"speed,haraka,polepole,mbio,slow" },
+    area:      { question:"Mtandao unasumbua eneo langu", answer:"Tatizo la mtandao linategemea eneo lako. Tigo nzuri mijini. Halotel bora vijijini na maeneo ya mbali. Niambie uko wapi nikupe ushauri bora!", keywords:"eneo,sehemu,coverage,signal,mbali" },
+    howlong:   { question:"Muda wa kupata bando", answer:"Tunatuma bando ndani ya dakika 1-5 tu! Hakikisha unatuma screenshot ya malipo WhatsApp.", keywords:"muda,lini,dakika,subiri,haraka" },
+    compare:   { question:"Tigo vs Halotel", answer:"TIGO: Nzuri mijini, Miezi 2, 1-20GB. HALOTEL: Bei nafuu zaidi, Miezi 3-6, 3-40GB+. Data nyingi chagua Halotel, speed mijini chagua Tigo!", keywords:"tigo,halotel,bora,tofauti,compare,ipi" },
+    payment:   { question:"Jinsi ya kulipia", answer:"Tunapokea M-Pesa, Airtel Money, Mixx by Yas kwa namba 136077210 (HANSI LUCAS). Baada ya kulipa tuma screenshot WhatsApp!", keywords:"lipia,lipa,malipo,mpesa,airtel,namba" },
+    failed:    { question:"Bando haikufika", answer:"Pole sana! Subiri dakika 10. Angalia namba uliyotupa. Washa zima simu. Wasiliana nasi 255612626715 na screenshot ya malipo.", keywords:"haikufika,haijafika,tatizo,fault" },
+    refund:    { question:"Napata refund?", answer:"Ndiyo tunalipa refund kama bando halikufika ndani ya saa 1 na malipo yamethibitishwa. Tuma WhatsApp kuomba refund.", keywords:"refund,rudisha,pesa" },
+    recommend: { question:"Nibadilishe bando gani?", answer:"WhatsApp/FB chagua Halotel 5-10GB. YouTube chagua Halotel 20-30GB. Kazi chagua 15GB. Familia chagua Halotel 35-40GB.", keywords:"recommend,nipendekeze,nibadilishe,gani" }
 };
 
-// ===== STATE =====
 var state = { tigo:{}, halo:{}, sale:{}, faq:{} };
 
 // ===== LOGIN =====
@@ -499,10 +615,18 @@ function doLogin() {
     } else {
         var err = document.getElementById('loginError');
         err.style.display = 'block';
-        setTimeout(function(){ err.style.display='none'; }, 3000);
+        setTimeout(function(){ err.style.display = 'none'; }, 3000);
     }
 }
-document.getElementById('pwInput').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+
+document.addEventListener('DOMContentLoaded', function() {
+    var pwInput = document.getElementById('pwInput');
+    if (pwInput) {
+        pwInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') doLogin();
+        });
+    }
+});
 
 function doLogout() {
     document.getElementById('dashboard').style.display = 'none';
@@ -511,17 +635,19 @@ function doLogout() {
 }
 
 // ===== TABS =====
+var TAB_NAMES = ['overview','tigo','halotel','sale','chatbot','reviews','referrals','analytics'];
+
 function switchTab(name) {
-    document.querySelectorAll('.tab-btn').forEach(function(b,i){
-        b.classList.toggle('active', b.innerText.toLowerCase().includes(name) ||
-            (name==='overview'&&i===0)||(name==='tigo'&&i===1)||(name==='halotel'&&i===2)||
-            (name==='sale'&&i===3)||(name==='chatbot'&&i===4)||(name==='reviews'&&i===5));
-    });
+    var idx = TAB_NAMES.indexOf(name);
+    var btns = document.querySelectorAll('.tab-btn');
+    btns.forEach(function(b,i){ b.classList.toggle('active', i === idx); });
     document.querySelectorAll('.tab-content').forEach(function(t){ t.classList.remove('active'); });
-    document.getElementById('tab-'+name).classList.add('active');
+    var el = document.getElementById('tab-' + name);
+    if (el) el.classList.add('active');
+    if (name === 'referrals') loadReferrals();
+    if (name === 'analytics') loadAnalytics();
 }
 
-// ===== LOAD ALL =====
 function loadAll() {
     loadTigoPrices();
     loadHaloPrices();
@@ -530,7 +656,6 @@ function loadAll() {
     loadReviews();
 }
 
-// ===== STATUS HELPERS =====
 function showAlert(id, msg, type) {
     var el = document.getElementById(id);
     if (!el) return;
@@ -538,11 +663,42 @@ function showAlert(id, msg, type) {
     el.innerText = msg;
     setTimeout(function(){ el.classList.remove('visible'); }, 3500);
 }
+
 function setSaveStatus(msg) {
     var el = document.getElementById('saveStatus');
+    if (!el) return;
     el.innerText = msg;
-    setTimeout(function(){ el.innerText=''; }, 3000);
+    setTimeout(function(){ el.innerText = ''; }, 3000);
 }
+
+// ===== EVENT DELEGATION (hakuna onclick zenye quotes hatari) =====
+document.addEventListener('click', function(e) {
+    var t = e.target;
+    var action = t.getAttribute('data-action');
+    if (!action) return;
+
+    if (action === 'delete-package') {
+        deletePackage(t.getAttribute('data-net'), t.getAttribute('data-gb'));
+    } else if (action === 'delete-sale-price') {
+        deleteSalePrice(t.getAttribute('data-net'), t.getAttribute('data-gb'));
+    } else if (action === 'edit-faq') {
+        editFaq(t.getAttribute('data-key'));
+    } else if (action === 'delete-faq') {
+        deleteFaq(t.getAttribute('data-key'));
+    } else if (action === 'delete-review') {
+        deleteReview(t.getAttribute('data-id'));
+    } else if (action === 'mark-paid') {
+        markPaid(t.getAttribute('data-docid'), t.getAttribute('data-code'));
+    } else if (action === 'approve-claim') {
+        approveClaim(t.getAttribute('data-claimid'));
+    } else if (action === 'delete-ref') {
+        deleteRef(t.getAttribute('data-docid'));
+    } else if (action === 'sale-tigo-card') {
+        var gb = t.getAttribute('data-gb');
+        var price = t.getAttribute('data-price');
+        window.open('https://wa.me/255612626715?text=' + encodeURIComponent('Habari! Nataka ' + gb + ' Tigo SALE kwa ' + price), '_blank');
+    }
+});
 
 // ===== TIGO PRICES =====
 function loadTigoPrices() {
@@ -550,48 +706,52 @@ function loadTigoPrices() {
         state.tigo = doc.exists ? doc.data() : DEFAULT_TIGO;
         renderTigoTable();
         document.getElementById('statTigo').innerText = Object.keys(state.tigo).length;
-    }).catch(function(){ state.tigo = DEFAULT_TIGO; renderTigoTable(); });
+    }).catch(function(){
+        state.tigo = DEFAULT_TIGO;
+        renderTigoTable();
+    });
 }
 
 function renderTigoTable() {
-    var keys = Object.keys(state.tigo).map(Number).sort(function(a,b){return a-b;});
+    var keys = Object.keys(state.tigo).map(Number).sort(function(a,b){ return a-b; });
     var tbody = document.getElementById('tigoTableBody');
-    tbody.innerHTML = '';
+    var html = '';
     keys.forEach(function(gb) {
         var price = state.tigo[gb];
-        var ppg = Math.round(price/gb);
-        tbody.innerHTML += '<tr>' +
-            '<td><strong>'+gb+'GB</strong></td>' +
-            '<td><input class="price-input" data-gb="'+gb+'" data-net="tigo" value="'+price+'" oninput="markChanged(this)"> TZS</td>' +
-            '<td style="color:var(--light)">'+ppg.toLocaleString()+' TZS/GB</td>' +
-            '<td><button class="btn btn-red btn-sm" onclick="deletePackage(\'tigo\','+gb+')">🗑</button></td>' +
-            '</tr>';
+        var ppg = Math.round(price / gb);
+        html += '<tr>';
+        html += '<td><strong>' + gb + 'GB</strong></td>';
+        html += '<td><input class="price-input" data-gb="' + gb + '" data-net="tigo" value="' + price + '" oninput="markChanged(this)"> TZS</td>';
+        html += '<td style="color:var(--light)">' + ppg.toLocaleString() + ' TZS/GB</td>';
+        html += '<td><button class="btn btn-red btn-sm" data-action="delete-package" data-net="tigo" data-gb="' + gb + '">Futa</button></td>';
+        html += '</tr>';
     });
+    tbody.innerHTML = html;
 }
 
 function saveTigoPrices() {
     var inputs = document.querySelectorAll('.price-input[data-net="tigo"]');
     var data = {};
-    inputs.forEach(function(inp){ data[inp.dataset.gb] = parseInt(inp.value)||0; });
+    inputs.forEach(function(inp){ data[inp.getAttribute('data-gb')] = parseInt(inp.value) || 0; });
     state.tigo = data;
     db.collection('config').doc('tigo_prices').set(data).then(function(){
-        showAlert('tigoAlert','✅ Bei za Tigo zimehifadhiwa!','success');
-        setSaveStatus('✅ Imehifadhiwa');
+        showAlert('tigoAlert', 'Bei za Tigo zimehifadhiwa!', 'success');
+        setSaveStatus('Imehifadhiwa');
         renderTigoTable();
-    }).catch(function(e){ showAlert('tigoAlert','❌ Hitilafu: '+e.message,'error'); });
+    }).catch(function(e){ showAlert('tigoAlert', 'Hitilafu: ' + e.message, 'error'); });
 }
 
 function addTigoPackage() {
     var gb = parseInt(document.getElementById('newTigoGb').value);
     var price = parseInt(document.getElementById('newTigoPrice').value);
-    if (!gb||!price){ alert('Weka GB na Bei'); return; }
+    if (!gb || !price) { alert('Weka GB na Bei'); return; }
     state.tigo[gb] = price;
-    document.getElementById('newTigoGb').value='';
-    document.getElementById('newTigoPrice').value='';
+    document.getElementById('newTigoGb').value = '';
+    document.getElementById('newTigoPrice').value = '';
     db.collection('config').doc('tigo_prices').set(state.tigo).then(function(){
-        showAlert('tigoAlert','✅ Package '+gb+'GB imeongezwa!','success');
+        showAlert('tigoAlert', 'Package ' + gb + 'GB imeongezwa!', 'success');
         renderTigoTable();
-    }).catch(function(e){ showAlert('tigoAlert','❌ '+e.message,'error'); });
+    }).catch(function(e){ showAlert('tigoAlert', e.message, 'error'); });
 }
 
 // ===== HALOTEL PRICES =====
@@ -600,57 +760,61 @@ function loadHaloPrices() {
         state.halo = doc.exists ? doc.data() : DEFAULT_HALO;
         renderHaloTable();
         document.getElementById('statHalo').innerText = Object.keys(state.halo).length;
-    }).catch(function(){ state.halo = DEFAULT_HALO; renderHaloTable(); });
+    }).catch(function(){
+        state.halo = DEFAULT_HALO;
+        renderHaloTable();
+    });
 }
 
 function renderHaloTable() {
-    var keys = Object.keys(state.halo).map(Number).sort(function(a,b){return a-b;});
+    var keys = Object.keys(state.halo).map(Number).sort(function(a,b){ return a-b; });
     var tbody = document.getElementById('haloTableBody');
-    tbody.innerHTML = '';
+    var html = '';
     keys.forEach(function(gb) {
         var price = state.halo[gb];
-        var ppg = Math.round(price/gb);
-        tbody.innerHTML += '<tr>' +
-            '<td><strong>'+gb+'GB</strong></td>' +
-            '<td><input class="price-input" data-gb="'+gb+'" data-net="halo" value="'+price+'" oninput="markChanged(this)"> TZS</td>' +
-            '<td style="color:var(--light)">'+ppg.toLocaleString()+' TZS/GB</td>' +
-            '<td><button class="btn btn-red btn-sm" onclick="deletePackage(\'halo\','+gb+')">🗑</button></td>' +
-            '</tr>';
+        var ppg = Math.round(price / gb);
+        html += '<tr>';
+        html += '<td><strong>' + gb + 'GB</strong></td>';
+        html += '<td><input class="price-input" data-gb="' + gb + '" data-net="halo" value="' + price + '" oninput="markChanged(this)"> TZS</td>';
+        html += '<td style="color:var(--light)">' + ppg.toLocaleString() + ' TZS/GB</td>';
+        html += '<td><button class="btn btn-red btn-sm" data-action="delete-package" data-net="halo" data-gb="' + gb + '">Futa</button></td>';
+        html += '</tr>';
     });
+    tbody.innerHTML = html;
 }
 
 function saveHaloPrices() {
     var inputs = document.querySelectorAll('.price-input[data-net="halo"]');
     var data = {};
-    inputs.forEach(function(inp){ data[inp.dataset.gb] = parseInt(inp.value)||0; });
+    inputs.forEach(function(inp){ data[inp.getAttribute('data-gb')] = parseInt(inp.value) || 0; });
     state.halo = data;
     db.collection('config').doc('halo_prices').set(data).then(function(){
-        showAlert('haloAlert','✅ Bei za Halotel zimehifadhiwa!','success');
-        setSaveStatus('✅ Imehifadhiwa');
+        showAlert('haloAlert', 'Bei za Halotel zimehifadhiwa!', 'success');
+        setSaveStatus('Imehifadhiwa');
         renderHaloTable();
-    }).catch(function(e){ showAlert('haloAlert','❌ Hitilafu: '+e.message,'error'); });
+    }).catch(function(e){ showAlert('haloAlert', 'Hitilafu: ' + e.message, 'error'); });
 }
 
 function addHaloPackage() {
     var gb = parseInt(document.getElementById('newHaloGb').value);
     var price = parseInt(document.getElementById('newHaloPrice').value);
-    if (!gb||!price){ alert('Weka GB na Bei'); return; }
+    if (!gb || !price) { alert('Weka GB na Bei'); return; }
     state.halo[gb] = price;
-    document.getElementById('newHaloGb').value='';
-    document.getElementById('newHaloPrice').value='';
+    document.getElementById('newHaloGb').value = '';
+    document.getElementById('newHaloPrice').value = '';
     db.collection('config').doc('halo_prices').set(state.halo).then(function(){
-        showAlert('haloAlert','✅ Package '+gb+'GB imeongezwa!','success');
+        showAlert('haloAlert', 'Package ' + gb + 'GB imeongezwa!', 'success');
         renderHaloTable();
-    }).catch(function(e){ showAlert('haloAlert','❌ '+e.message,'error'); });
+    }).catch(function(e){ showAlert('haloAlert', e.message, 'error'); });
 }
 
 function deletePackage(net, gb) {
-    if (!confirm('Futa '+gb+'GB?')) return;
+    if (!confirm('Futa ' + gb + 'GB?')) return;
     delete state[net][gb];
-    var docName = net==='tigo' ? 'tigo_prices' : 'halo_prices';
+    var docName = net === 'tigo' ? 'tigo_prices' : 'halo_prices';
     db.collection('config').doc(docName).set(state[net]).then(function(){
-        if(net==='tigo') renderTigoTable(); else renderHaloTable();
-        setSaveStatus('✅ Imefutwa');
+        if (net === 'tigo') renderTigoTable(); else renderHaloTable();
+        setSaveStatus('Imefutwa');
     });
 }
 
@@ -662,51 +826,95 @@ function loadSaleConfig() {
         state.sale = doc.exists ? doc.data() : DEFAULT_SALE;
         renderSaleConfig();
         renderSalePrices();
-        document.getElementById('statSale').innerText = state.sale.active ? '🟢 ON' : '⭕ OFF';
-    }).catch(function(){ state.sale = DEFAULT_SALE; renderSaleConfig(); renderSalePrices(); });
-}
-
-function renderSaleConfig() {
-    var s = state.sale;
-    var tog = document.getElementById('saleToggle');
-    var lbl = document.getElementById('saleToggleLabel');
-    tog.className = 'toggle-switch' + (s.active ? ' on' : '');
-    lbl.innerText = s.active ? '🟢 Imewashwa' : '⭕ Imezimwa';
-    document.getElementById('saleTitle').value = s.title || '';
-    document.getElementById('saleSubtitle').value = s.subtitle || '';
-    if (s.endsAt) document.getElementById('saleEndsAt').value = s.endsAt.substring(0,16);
-    // Overview
-    var ov = document.getElementById('overviewSale');
-    if (ov) ov.innerHTML = s.active
-        ? '<p style="color:var(--green);font-weight:700">🟢 Flash Sale iko ON — inaisha: '+s.endsAt+'</p>'
-        : '<p style="color:var(--light)">⭕ Flash Sale imezimwa sasa hivi.</p>';
-}
-
-function renderSalePrices() {
-    var prices = state.sale.tigoPrices || {};
-    var tbody = document.getElementById('salePriceBody');
-    tbody.innerHTML = '';
-    Object.keys(prices).forEach(function(gb) {
-        var p = prices[gb];
-        var pct = Math.round((p.original-p.sale)/p.original*100);
-        tbody.innerHTML += '<tr>' +
-            '<td><strong>'+gb+'</strong></td>' +
-            '<td><input class="price-input" data-salegb="'+gb+'" data-type="original" value="'+p.original+'" oninput="markChanged(this)"> TZS</td>' +
-            '<td><input class="price-input" data-salegb="'+gb+'" data-type="sale" value="'+p.sale+'" oninput="markChanged(this)"> TZS</td>' +
-            '<td style="color:var(--red);font-weight:700">-'+pct+'%</td>' +
-            '<td><button class="btn btn-red btn-sm" onclick="deleteSalePrice(\''+gb+'\')">🗑</button></td></tr>';
+        updateSaleStat();
+    }).catch(function(){
+        state.sale = DEFAULT_SALE;
+        renderSaleConfig();
+        renderSalePrices();
+        updateSaleStat();
     });
 }
 
-function toggleSale() {
-    state.sale.active = !state.sale.active;
+function updateSaleStat() {
+    var t = state.sale.activeTigo, h = state.sale.activeHalo;
+    var label = '';
+    if (t && h) label = 'T+H ON';
+    else if (t) label = 'Tigo ON';
+    else if (h) label = 'Halo ON';
+    else label = 'OFF';
+    document.getElementById('statSale').innerText = label;
+}
+
+function renderSaleConfig() {
+    var saleData = state.sale;
+
+    var togT = document.getElementById('saleToggleTigo');
+    var lblT = document.getElementById('saleToggleLabelTigo');
+    togT.className = 'toggle-switch' + (saleData.activeTigo ? ' on' : '');
+    lblT.innerText = saleData.activeTigo ? 'Imewashwa' : 'Imezimwa';
+
+    var togH = document.getElementById('saleToggleHalo');
+    var lblH = document.getElementById('saleToggleLabelHalo');
+    togH.className = 'toggle-switch' + (saleData.activeHalo ? ' on' : '');
+    lblH.innerText = saleData.activeHalo ? 'Imewashwa' : 'Imezimwa';
+
+    document.getElementById('saleTitle').value = saleData.title || '';
+    document.getElementById('saleSubtitle').value = saleData.subtitle || '';
+    if (saleData.endsAt) document.getElementById('saleEndsAt').value = saleData.endsAt.substring(0,16);
+
+    var ov = document.getElementById('overviewSale');
+    if (ov) {
+        var anyActive = saleData.activeTigo || saleData.activeHalo;
+        var parts = [];
+        if (saleData.activeTigo) parts.push('Tigo');
+        if (saleData.activeHalo) parts.push('Halotel');
+        ov.innerHTML = anyActive
+            ? '<p style="color:var(--green);font-weight:700">Ofa za ' + parts.join(' na ') + ' ziko ON - zinaisha: ' + saleData.endsAt + '</p>'
+            : '<p style="color:var(--light)">Hakuna ofa inayoendelea sasa hivi.</p>';
+    }
+}
+
+function renderSalePrices() {
+    renderSalePricesFor('tigo');
+    renderSalePricesFor('halo');
+}
+
+function renderSalePricesFor(net) {
+    var prices = net === 'tigo' ? (state.sale.tigoPrices || {}) : (state.sale.haloPrices || {});
+    var tbodyId = net === 'tigo' ? 'salePriceBody' : 'haloSalePriceBody';
+    var tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+    var keys = Object.keys(prices);
+    if (keys.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--light);text-align:center;padding:14px">Hakuna bei za sale bado</td></tr>';
+        return;
+    }
+    var html = '';
+    keys.forEach(function(gb) {
+        var p = prices[gb];
+        var pct = Math.round((p.original - p.sale) / p.original * 100);
+        html += '<tr>';
+        html += '<td><strong>' + gb + '</strong></td>';
+        html += '<td><input class="price-input" data-salegb="' + gb + '" data-salenet="' + net + '" data-type="original" value="' + p.original + '" oninput="markChanged(this)"> TZS</td>';
+        html += '<td><input class="price-input" data-salegb="' + gb + '" data-salenet="' + net + '" data-type="sale" value="' + p.sale + '" oninput="markChanged(this)"> TZS</td>';
+        html += '<td style="color:var(--red);font-weight:700">-' + pct + '%</td>';
+        html += '<td><button class="btn btn-red btn-sm" data-action="delete-sale-price" data-net="' + net + '" data-gb="' + gb + '">Futa</button></td>';
+        html += '</tr>';
+    });
+    tbody.innerHTML = html;
+}
+
+function toggleSale(net) {
+    if (net === 'tigo') state.sale.activeTigo = !state.sale.activeTigo;
+    else state.sale.activeHalo = !state.sale.activeHalo;
     renderSaleConfig();
 }
 
 function setQuickTime(hours) {
     if (!hours) return;
-    var d = new Date(); d.setHours(d.getHours()+parseInt(hours));
-    var local = new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().substring(0,16);
+    var d = new Date();
+    d.setHours(d.getHours() + parseInt(hours));
+    var local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().substring(0,16);
     document.getElementById('saleEndsAt').value = local;
     document.getElementById('saleQuickTime').value = '';
 }
@@ -716,55 +924,63 @@ function saveSaleConfig() {
     state.sale.subtitle = document.getElementById('saleSubtitle').value;
     state.sale.endsAt = document.getElementById('saleEndsAt').value;
     db.collection('config').doc('flash_sale').set(state.sale).then(function(){
-        showAlert('saleAlert','✅ Mipangilio ya Sale imehifadhiwa!','success');
-        setSaveStatus('✅ Imehifadhiwa');
+        showAlert('saleAlert', 'Mipangilio ya Ofa zimehifadhiwa!', 'success');
+        setSaveStatus('Imehifadhiwa');
         renderSaleConfig();
-        document.getElementById('statSale').innerText = state.sale.active ? '🟢 ON' : '⭕ OFF';
-    }).catch(function(e){ showAlert('saleAlert','❌ '+e.message,'error'); });
+        updateSaleStat();
+    }).catch(function(e){ showAlert('saleAlert', e.message, 'error'); });
 }
 
 function saveSalePrices(net) {
     var prices = {};
-    document.querySelectorAll('[data-salegb][data-salenet="'+net+'"]').forEach(function(inp){
-        var gb = inp.dataset.salegb, type = inp.dataset.type;
+    document.querySelectorAll('[data-salegb][data-salenet="' + net + '"]').forEach(function(inp){
+        var gb = inp.getAttribute('data-salegb');
+        var type = inp.getAttribute('data-type');
         if (!prices[gb]) prices[gb] = {};
-        prices[gb][type] = parseInt(inp.value)||0;
+        prices[gb][type] = parseInt(inp.value) || 0;
     });
     if (net === 'tigo') state.sale.tigoPrices = prices;
     else state.sale.haloPrices = prices;
     db.collection('config').doc('flash_sale').set(state.sale).then(function(){
         var label = net === 'tigo' ? 'Tigo' : 'Halotel';
-        showAlert('saleAlert','✅ Bei za Sale za '+label+' zimehifadhiwa!','success');
+        showAlert('saleAlert', 'Bei za Sale za ' + label + ' zimehifadhiwa!', 'success');
         renderSalePricesFor(net);
-    }).catch(function(e){ showAlert('saleAlert','❌ '+e.message,'error'); });
+    }).catch(function(e){ showAlert('saleAlert', e.message, 'error'); });
 }
 
 function addSalePrice(net) {
-    var gbId = net==='tigo' ? 'newSaleGb' : 'newHaloSaleGb';
-    var origId = net==='tigo' ? 'newSaleOrig' : 'newHaloSaleOrig';
-    var saleId = net==='tigo' ? 'newSaleSale' : 'newHaloSaleSale';
-    var gb=document.getElementById(gbId).value.trim();
-    var orig=parseInt(document.getElementById(origId).value);
-    var sale=parseInt(document.getElementById(saleId).value);
-    if(!gb||!orig||!sale){ alert('Jaza fields zote'); return; }
-    if (net==='tigo') { if(!state.sale.tigoPrices) state.sale.tigoPrices={}; state.sale.tigoPrices[gb]={original:orig,sale:sale}; }
-    else { if(!state.sale.haloPrices) state.sale.haloPrices={}; state.sale.haloPrices[gb]={original:orig,sale:sale}; }
-    document.getElementById(gbId).value='';
-    document.getElementById(origId).value='';
-    document.getElementById(saleId).value='';
+    var gbId = net === 'tigo' ? 'newSaleGb' : 'newHaloSaleGb';
+    var origId = net === 'tigo' ? 'newSaleOrig' : 'newHaloSaleOrig';
+    var saleId = net === 'tigo' ? 'newSaleSale' : 'newHaloSaleSale';
+    var gb = document.getElementById(gbId).value.trim();
+    var orig = parseInt(document.getElementById(origId).value);
+    var sale = parseInt(document.getElementById(saleId).value);
+    if (!gb || !orig || !sale) { alert('Jaza fields zote'); return; }
+    if (net === 'tigo') {
+        if (!state.sale.tigoPrices) state.sale.tigoPrices = {};
+        state.sale.tigoPrices[gb] = {original: orig, sale: sale};
+    } else {
+        if (!state.sale.haloPrices) state.sale.haloPrices = {};
+        state.sale.haloPrices[gb] = {original: orig, sale: sale};
+    }
+    document.getElementById(gbId).value = '';
+    document.getElementById(origId).value = '';
+    document.getElementById(saleId).value = '';
     db.collection('config').doc('flash_sale').set(state.sale).then(function(){
-        var label = net==='tigo'?'Tigo':'Halotel';
-        showAlert('saleAlert','✅ Bei ya Sale ya '+label+' imeongezwa!','success');
+        var label = net === 'tigo' ? 'Tigo' : 'Halotel';
+        showAlert('saleAlert', 'Bei ya Sale ya ' + label + ' imeongezwa!', 'success');
         renderSalePricesFor(net);
-    }).catch(function(e){ showAlert('saleAlert','❌ '+e.message,'error'); });
+    }).catch(function(e){ showAlert('saleAlert', e.message, 'error'); });
 }
 
 function deleteSalePrice(net, gb) {
-    if (!confirm('Futa '+gb+' kutoka Sale ya '+(net==='tigo'?'Tigo':'Halotel')+'?')) return;
-    if (net==='tigo') delete state.sale.tigoPrices[gb];
+    var label = net === 'tigo' ? 'Tigo' : 'Halotel';
+    if (!confirm('Futa ' + gb + ' kutoka Sale ya ' + label + '?')) return;
+    if (net === 'tigo') delete state.sale.tigoPrices[gb];
     else delete state.sale.haloPrices[gb];
     db.collection('config').doc('flash_sale').set(state.sale).then(function(){
-        renderSalePricesFor(net); setSaveStatus('✅ Imefutwa');
+        renderSalePricesFor(net);
+        setSaveStatus('Imefutwa');
     });
 }
 
@@ -773,102 +989,377 @@ function loadFaq() {
     db.collection('config').doc('chatbot_faq').get().then(function(doc) {
         state.faq = doc.exists ? doc.data() : DEFAULT_FAQ;
         renderFaqList();
-    }).catch(function(){ state.faq = DEFAULT_FAQ; renderFaqList(); });
+    }).catch(function(){
+        state.faq = DEFAULT_FAQ;
+        renderFaqList();
+    });
 }
 
 function renderFaqList() {
     var list = document.getElementById('faqList');
-    list.innerHTML = '';
+    var html = '';
     Object.keys(state.faq).forEach(function(key) {
         var item = state.faq[key];
-        list.innerHTML += '<div class="faq-item" id="faq-'+key+'">' +
-            '<div class="faq-item-header">' +
-                '<span class="faq-key">'+key+'</span>' +
-                '<div class="faq-actions">' +
-                    '<button class="btn btn-primary btn-sm" onclick="editFaq(\''+key+'\')">✏️ Hariri</button>' +
-                    '<button class="btn btn-red btn-sm" onclick="deleteFaq(\''+key+'\')">🗑</button>' +
-                '</div>' +
-            '</div>' +
-            '<div class="faq-question">'+item.question+'</div>' +
-            '<div class="faq-answer">'+item.answer+'</div>' +
-            '</div>';
+        html += '<div class="faq-item">';
+        html += '<div class="faq-item-header">';
+        html += '<span class="faq-key">' + key + '</span>';
+        html += '<div class="faq-actions">';
+        html += '<button class="btn btn-primary btn-sm" data-action="edit-faq" data-key="' + key + '">Hariri</button> ';
+        html += '<button class="btn btn-red btn-sm" data-action="delete-faq" data-key="' + key + '">Futa</button>';
+        html += '</div></div>';
+        html += '<div class="faq-question">' + item.question + '</div>';
+        html += '<div class="faq-answer">' + item.answer + '</div>';
+        html += '</div>';
     });
+    list.innerHTML = html;
 }
 
 function editFaq(key) {
     var item = state.faq[key];
     var newQ = prompt('Badilisha swali:', item.question);
-    if (newQ===null) return;
+    if (newQ === null) return;
     var newA = prompt('Badilisha jibu:', item.answer);
-    if (newA===null) return;
-    var newKw = prompt('Badilisha keywords (tenga kwa koma):', item.keywords||'');
-    state.faq[key] = { question: newQ, answer: newA, keywords: newKw||'' };
+    if (newA === null) return;
+    var newKw = prompt('Badilisha keywords (tenga kwa koma):', item.keywords || '');
+    state.faq[key] = { question: newQ, answer: newA, keywords: newKw || '' };
     db.collection('config').doc('chatbot_faq').set(state.faq).then(function(){
-        showAlert('faqAlert','✅ Swali limebadilishwa!','success');
+        showAlert('faqAlert', 'Swali limebadilishwa!', 'success');
         renderFaqList();
-    }).catch(function(e){ showAlert('faqAlert','❌ '+e.message,'error'); });
+    }).catch(function(e){ showAlert('faqAlert', e.message, 'error'); });
 }
 
 function deleteFaq(key) {
-    if (!confirm('Futa swali "'+key+'"?')) return;
+    if (!confirm('Futa swali "' + key + '"?')) return;
     delete state.faq[key];
     db.collection('config').doc('chatbot_faq').set(state.faq).then(function(){
-        showAlert('faqAlert','✅ Swali limefutwa!','success');
+        showAlert('faqAlert', 'Swali limefutwa!', 'success');
         renderFaqList();
-    }).catch(function(e){ showAlert('faqAlert','❌ '+e.message,'error'); });
+    }).catch(function(e){ showAlert('faqAlert', e.message, 'error'); });
 }
 
 function addFaq() {
-    var key = document.getElementById('newFaqKey').value.trim().toLowerCase().replace(/\s/g,'_');
+    var key = document.getElementById('newFaqKey').value.trim().toLowerCase().replace(/\s/g, '_');
     var q = document.getElementById('newFaqQuestion').value.trim();
     var a = document.getElementById('newFaqAnswer').value.trim();
     var kw = document.getElementById('newFaqKeywords').value.trim();
-    if (!key||!q||!a){ alert('Jaza key, swali, na jibu'); return; }
-    if (state.faq[key]){ alert('Key "'+key+'" ipo tayari — chagua jingine'); return; }
-    state.faq[key] = { question:q, answer:a, keywords:kw };
+    if (!key || !q || !a) { alert('Jaza key, swali, na jibu'); return; }
+    if (state.faq[key]) { alert('Key "' + key + '" ipo tayari - chagua jingine'); return; }
+    state.faq[key] = { question: q, answer: a, keywords: kw };
     db.collection('config').doc('chatbot_faq').set(state.faq).then(function(){
-        document.getElementById('newFaqKey').value='';
-        document.getElementById('newFaqQuestion').value='';
-        document.getElementById('newFaqAnswer').value='';
-        document.getElementById('newFaqKeywords').value='';
-        showAlert('faqAlert','✅ Swali jipya limeongezwa!','success');
+        document.getElementById('newFaqKey').value = '';
+        document.getElementById('newFaqQuestion').value = '';
+        document.getElementById('newFaqAnswer').value = '';
+        document.getElementById('newFaqKeywords').value = '';
+        showAlert('faqAlert', 'Swali jipya limeongezwa!', 'success');
         renderFaqList();
-    }).catch(function(e){ showAlert('faqAlert','❌ '+e.message,'error'); });
+    }).catch(function(e){ showAlert('faqAlert', e.message, 'error'); });
 }
 
 // ===== REVIEWS =====
 function loadReviews() {
     var div = document.getElementById('reviewsList');
-    div.innerHTML = '<div class="loading-spinner">⏳ Inapakia...</div>';
-    db.collection('reviews').orderBy('createdAt','desc').get().then(function(snap){
+    div.innerHTML = '<div class="loading-spinner">Inapakia...</div>';
+    db.collection('reviews').orderBy('createdAt', 'desc').get().then(function(snap) {
         document.getElementById('reviewCount').innerText = snap.size;
         document.getElementById('statReviews').innerText = snap.size;
-        if (snap.empty){ div.innerHTML='<p style="color:var(--light);text-align:center;padding:20px">Hakuna maoni bado.</p>'; return; }
-        div.innerHTML='';
-        snap.forEach(function(doc){
-            var d=doc.data(), id=doc.id;
+        if (snap.empty) {
+            div.innerHTML = '<p style="color:var(--light);text-align:center;padding:20px">Hakuna maoni bado.</p>';
+            return;
+        }
+        var html = '';
+        snap.forEach(function(doc) {
+            var d = doc.data();
+            var id = doc.id;
             var date = d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString('sw') : '';
-            div.innerHTML += '<div class="review-item">' +
-                '<div class="review-item-body">' +
-                    '<div class="review-meta">' +
-                        '<span class="review-name">'+d.name.replace(/</g,'&lt;')+'</span>' +
-                        '<span class="review-stars">'+'⭐'.repeat(Math.max(1,Math.min(5,d.stars||5)))+'</span>' +
-                    '</div>' +
-                    '<div class="review-msg">'+d.message.replace(/</g,'&lt;')+'</div>' +
-                    '<div class="review-date">'+date+'</div>' +
-                '</div>' +
-                '<button class="btn btn-red btn-sm" onclick="deleteReview(\''+id+'\')">🗑 Futa</button>' +
-                '</div>';
+            var stars = Math.max(1, Math.min(5, d.stars || 5));
+            var starStr = '';
+            for (var i=0; i<stars; i++) starStr += '*';
+            html += '<div class="review-item">';
+            html += '<div class="review-item-body">';
+            html += '<div class="review-meta">';
+            html += '<span class="review-name">' + (d.name || '').replace(/</g,'&lt;') + '</span>';
+            html += '<span class="review-stars">' + starStr + '</span>';
+            html += '</div>';
+            html += '<div class="review-msg">' + (d.message || '').replace(/</g,'&lt;') + '</div>';
+            html += '<div class="review-date">' + date + '</div>';
+            html += '</div>';
+            html += '<button class="btn btn-red btn-sm" data-action="delete-review" data-id="' + id + '">Futa</button>';
+            html += '</div>';
         });
-    }).catch(function(e){ div.innerHTML='<p style="color:var(--red)">❌ '+e.message+'</p>'; });
+        div.innerHTML = html;
+    }).catch(function(e){
+        div.innerHTML = '<p style="color:var(--red)">' + e.message + '</p>';
+    });
 }
 
 function deleteReview(id) {
     if (!confirm('Futa maoni haya?')) return;
     db.collection('reviews').doc(id).delete().then(function(){
-        showAlert('reviewsAlert','✅ Maoni yamefutwa!','success');
+        showAlert('reviewsAlert', 'Maoni yamefutwa!', 'success');
         loadReviews();
-    }).catch(function(e){ showAlert('reviewsAlert','❌ '+e.message,'error'); });
+    }).catch(function(e){ showAlert('reviewsAlert', e.message, 'error'); });
+}
+
+// ===== REFERRALS =====
+function loadReferrals() {
+    var tbody = document.getElementById('refTableBody');
+    var claimsList = document.getElementById('claimsList');
+    tbody.innerHTML = '<tr><td colspan="7" class="loading-spinner">Inapakia...</td></tr>';
+
+    db.collection('referrals').orderBy('createdAt', 'desc').get().then(function(snap) {
+        document.getElementById('statRefTotal').innerText = snap.size;
+        var totalShares = 0, totalDiscount = 0;
+        var html = '';
+
+        if (snap.empty) {
+            tbody.innerHTML = '<tr><td colspan="7" style="color:var(--light);text-align:center;padding:20px">Hakuna referrals bado</td></tr>';
+        } else {
+            snap.forEach(function(doc) {
+                var d = doc.data();
+                totalShares += d.totalInvited || 0;
+                totalDiscount += d.totalDiscount || 0;
+                var discountPending = d.totalDiscount || 0;
+                var statusColor = discountPending > 0 ? 'var(--orange)' : 'var(--light)';
+                var statusLabel = discountPending > 0 ? ('Pending TZS ' + discountPending.toLocaleString()) : 'Hakuna madai';
+
+                html += '<tr>';
+                html += '<td><strong style="font-size:16px;letter-spacing:1px;color:var(--orange)">' + d.code + '</strong></td>';
+                html += '<td>' + d.phone + '</td>';
+                html += '<td style="text-align:center"><strong>' + (d.totalInvited || 0) + '</strong></td>';
+                html += '<td style="text-align:center">' + (d.visits || 0) + '</td>';
+                html += '<td style="text-align:center;font-weight:700;color:var(--red)">' + (discountPending > 0 ? discountPending.toLocaleString() + ' TZS' : '-') + '</td>';
+                html += '<td><span style="color:' + statusColor + ';font-size:12px;font-weight:600">' + statusLabel + '</span></td>';
+                html += '<td>';
+                html += '<button class="btn btn-green btn-sm" data-action="mark-paid" data-docid="' + doc.id + '" data-code="' + d.code + '">Lipia</button> ';
+                html += '<button class="btn btn-red btn-sm" data-action="delete-ref" data-docid="' + doc.id + '">Futa</button>';
+                html += '</td></tr>';
+            });
+            tbody.innerHTML = html;
+        }
+
+        document.getElementById('statRefInvited').innerText = totalShares;
+        document.getElementById('statRefAmount').innerText = totalDiscount.toLocaleString() + ' TZS';
+    }).catch(function(e){
+        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--red)">' + e.message + '</td></tr>';
+    });
+
+    db.collection('referral_claims').where('status','==','pending').orderBy('claimedAt','desc').get().then(function(snap) {
+        document.getElementById('statRefClaims').innerText = snap.size;
+        if (snap.empty) {
+            claimsList.innerHTML = '<p style="color:var(--light);text-align:center;padding:20px">Hakuna madai ya pending sasa hivi</p>';
+            return;
+        }
+        var html = '';
+        snap.forEach(function(doc) {
+            var d = doc.data();
+            var date = d.claimedAt ? new Date(d.claimedAt.toDate()).toLocaleDateString('sw') : '-';
+            html += '<div class="review-item">';
+            html += '<div class="review-item-body">';
+            html += '<div class="review-meta">';
+            html += '<span class="review-name">Code: <strong style="color:var(--orange)">' + d.code + '</strong></span>';
+            html += '<span style="background:var(--orange);color:white;font-size:11px;padding:2px 8px;border-radius:50px">' + d.amount + ' TZS</span>';
+            html += '</div>';
+            html += '<div class="review-msg">Namba: ' + d.phone + ' - Tarehe: ' + date + '</div>';
+            html += '</div>';
+            html += '<button class="btn btn-green btn-sm" data-action="approve-claim" data-claimid="' + doc.id + '">Thibitisha</button>';
+            html += '</div>';
+        });
+        claimsList.innerHTML = html;
+    }).catch(function(){});
+}
+
+function markPaid(docId, code) {
+    if (!confirm('Thibitisha umelipa discount yote ya code ' + code + '?')) return;
+    db.collection('referrals').doc(docId).update({
+        totalDiscount: 0,
+        lastPaidAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(){
+        showAlert('refAlert', 'Imewekwa kuwa imelipwa!', 'success');
+        loadReferrals();
+    }).catch(function(e){ showAlert('refAlert', e.message, 'error'); });
+}
+
+function approveClaim(claimId) {
+    if (!confirm('Thibitisha dai hili?')) return;
+    db.collection('referral_claims').doc(claimId).update({ status: 'approved' }).then(function(){
+        showAlert('refAlert', 'Dai limethibitishwa!', 'success');
+        loadReferrals();
+    }).catch(function(e){ showAlert('refAlert', e.message, 'error'); });
+}
+
+function deleteRef(docId) {
+    if (!confirm('Futa referral hii?')) return;
+    db.collection('referrals').doc(docId).delete().then(function(){
+        showAlert('refAlert', 'Referral imefutwa!', 'success');
+        loadReferrals();
+    }).catch(function(e){ showAlert('refAlert', e.message, 'error'); });
+}
+
+// ===== ANALYTICS (Click Tracking) =====
+var _analyticsCache = [];
+
+function loadAnalytics() {
+    var tbody = document.getElementById('analyticsTableBody');
+    tbody.innerHTML = '<tr><td colspan="5" class="loading-spinner">⏳ Inapakia...</td></tr>';
+
+    db.collection('bundle_clicks').get().then(function(snap) {
+        if (snap.empty) {
+            tbody.innerHTML = '<tr><td colspan="5" style="color:var(--light);text-align:center;padding:20px">Hakuna data bado — wateja wakianza kubonyeza "Nunua Sasa" data itaonekana hapa</td></tr>';
+            document.getElementById('statTotalClicks').innerText = '0';
+            document.getElementById('statTotalWA').innerText = '0';
+            document.getElementById('statTopTigo').innerText = '—';
+            document.getElementById('statTopHalo').innerText = '—';
+            _analyticsCache = [];
+            return;
+        }
+
+        var rows = [];
+        var totalModal = 0, totalWA = 0;
+        var tigoTop = null, tigoMax = 0;
+        var haloTop = null, haloMax = 0;
+
+        snap.forEach(function(doc) {
+            var d = doc.data();
+            var modalOpens = d.modalOpens || 0;
+            var waSent = d.whatsappSent || 0;
+            var total = modalOpens + waSent;
+            var conversion = modalOpens > 0 ? Math.round((waSent / modalOpens) * 100) : 0;
+
+            rows.push({
+                name: d.bundleName || doc.id,
+                modalOpens: modalOpens,
+                whatsappSent: waSent,
+                total: total,
+                conversion: conversion
+            });
+
+            totalModal += modalOpens;
+            totalWA += waSent;
+
+            if ((d.bundleName||'').indexOf('Tigo') !== -1 && total > tigoMax) { tigoMax = total; tigoTop = d.bundleName; }
+            if ((d.bundleName||'').indexOf('Halotel') !== -1 && total > haloMax) { haloMax = total; haloTop = d.bundleName; }
+        });
+
+        rows.sort(function(a,b){ return b.total - a.total; });
+        _analyticsCache = rows;
+
+        var html = '';
+        rows.forEach(function(r) {
+            html += '<tr>';
+            html += '<td><strong>' + r.name + '</strong></td>';
+            html += '<td style="text-align:center">' + r.modalOpens + '</td>';
+            html += '<td style="text-align:center;color:var(--green);font-weight:700">' + r.whatsappSent + '</td>';
+            html += '<td style="text-align:center;font-weight:700">' + r.total + '</td>';
+            html += '<td style="text-align:center">' + r.conversion + '%</td>';
+            html += '</tr>';
+        });
+        tbody.innerHTML = html;
+
+        document.getElementById('statTotalClicks').innerText = (totalModal + totalWA);
+        document.getElementById('statTotalWA').innerText = totalWA;
+        document.getElementById('statTopTigo').innerText = tigoTop || '—';
+        document.getElementById('statTopHalo').innerText = haloTop || '—';
+    }).catch(function(e){
+        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--red)">' + e.message + '</td></tr>';
+    });
+}
+
+// ===== EXPORT TO EXCEL =====
+function exportToExcel(type) {
+    if (type === 'clicks') {
+        if (_analyticsCache.length === 0) { alert('Hakuna data ya kupakua — bonyeza "Onyesha upya" kwanza'); return; }
+        var data = _analyticsCache.map(function(r) {
+            return {
+                'Bando': r.name,
+                'Modal Opens': r.modalOpens,
+                'WhatsApp Sent': r.whatsappSent,
+                'Jumla': r.total,
+                'Conversion %': r.conversion
+            };
+        });
+        downloadExcel(data, 'smart_bundles_clicks.xlsx', 'Clicks');
+    } else if (type === 'reviews') {
+        db.collection('reviews').orderBy('createdAt','desc').get().then(function(snap) {
+            var data = [];
+            snap.forEach(function(doc) {
+                var d = doc.data();
+                var date = d.createdAt ? new Date(d.createdAt.toDate()).toLocaleString('sw') : '';
+                data.push({ 'Jina': d.name, 'Maoni': d.message, 'Nyota': d.stars, 'Tarehe': date });
+            });
+            if (data.length === 0) { alert('Hakuna maoni ya kupakua'); return; }
+            downloadExcel(data, 'smart_bundles_reviews.xlsx', 'Reviews');
+        }).catch(function(e){ alert('Hitilafu: ' + e.message); });
+    } else if (type === 'referrals') {
+        db.collection('referrals').orderBy('createdAt','desc').get().then(function(snap) {
+            var data = [];
+            snap.forEach(function(doc) {
+                var d = doc.data();
+                var date = d.createdAt ? new Date(d.createdAt.toDate()).toLocaleString('sw') : '';
+                data.push({
+                    'Code': d.code, 'Namba': d.phone, 'Shares': d.totalInvited||0,
+                    'Visits': d.visits||0, 'Discount Pending (TZS)': d.totalDiscount||0, 'Tarehe': date
+                });
+            });
+            if (data.length === 0) { alert('Hakuna referrals za kupakua'); return; }
+            downloadExcel(data, 'smart_bundles_referrals.xlsx', 'Referrals');
+        }).catch(function(e){ alert('Hitilafu: ' + e.message); });
+    }
+}
+
+function downloadExcel(data, filename, sheetName) {
+    var ws = XLSX.utils.json_to_sheet(data);
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    XLSX.writeFile(wb, filename);
+}
+
+// ===== CLEAR ANALYTICS DATA =====
+function clearAnalyticsData() {
+    var confirm1 = confirm('Una uhakika unataka kufuta DATA YOTE ya clicks/analytics? Hatua hii haiwezi kurudishwa nyuma.');
+    if (!confirm1) return;
+
+    var typed = prompt('Andika "FUTA" (herufi kubwa) ili kuthibitisha:');
+    if (typed !== 'FUTA') {
+        alert('Imeghairiwa — neno halikuwa sahihi.');
+        return;
+    }
+
+    var statusEl = document.getElementById('clearStatus');
+    statusEl.style.display = 'block';
+    statusEl.style.color = 'var(--light)';
+    statusEl.innerText = 'Inafuta data...';
+
+    db.collection('bundle_clicks').get().then(function(snap) {
+        if (snap.empty) {
+            statusEl.style.color = 'var(--light)';
+            statusEl.innerText = 'Hakuna data ya kufuta — tayari ni tupu.';
+            return;
+        }
+
+        var batch = db.batch();
+        var count = 0;
+        snap.forEach(function(doc) {
+            batch.delete(doc.ref);
+            count++;
+        });
+
+        batch.commit().then(function() {
+            statusEl.style.color = 'var(--green)';
+            statusEl.innerText = '✅ Data ' + count + ' bando zimefutwa. Mfumo utaanza kuhesabu upya.';
+            // Reset stats display
+            document.getElementById('statTotalClicks').innerText = '0';
+            document.getElementById('statTotalWA').innerText = '0';
+            document.getElementById('statTopTigo').innerText = '—';
+            document.getElementById('statTopHalo').innerText = '—';
+            loadAnalytics();
+        }).catch(function(e) {
+            statusEl.style.color = 'var(--red)';
+            statusEl.innerText = '❌ Hitilafu: ' + e.message;
+        });
+    }).catch(function(e) {
+        statusEl.style.color = 'var(--red)';
+        statusEl.innerText = '❌ Hitilafu: ' + e.message;
+    });
 }
 </script>
 </body>
